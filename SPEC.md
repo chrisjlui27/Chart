@@ -1,77 +1,94 @@
 # Hypercomplex Algebra Viewer — Project Specification
 
-Status: draft v0.2 (desktop respec, for review)
+Status: draft v0.4 (desktop, dimension 128, Wilmot and mirror-sedenion targets; for review)
 Target: standalone desktop application (macOS, Windows, Linux), fully offline
 
 ---
 
 ## 1. Vision
 
-A desktop laboratory for finite-dimensional real algebras. You **set** an
-algebra (quaternions, octonions, sedenions and higher Cayley–Dickson
-algebras, split and dual forms, Clifford algebras, tensor products, or a
-custom multiplication table), **slice** it by a subalgebra, and **rotate**
-that slice through the ambient algebra while linked views render what the
+A desktop laboratory for finite-dimensional real algebras, built around the
+Cayley–Dickson family and its relatives. You **set** an algebra
+(quaternions, octonions, sedenions and the ultronions U₁…U₄ up to dimension
+128, the mirror sedenions and other mirror doubles, split forms, Clifford
+algebras, tensor products, arbitrary sign functions on 𝔽₂ᵐ, or a custom
+multiplication table), **slice** it by a subalgebra, and **rotate** that
+slice through the ambient algebra while linked views render what the
 multiplication does to the slice. Every animation corresponds to an exact
-algebraic statement, and every visual quantity can be inspected, scripted
-and exported.
+algebraic statement, and every quantity can be inspected, scripted and
+exported.
 
-The core insight the app is built around: **a subalgebra is a subspace
-with zero "leakage"** (products of elements in the subspace stay in the
-subspace). Rotating a slice off a subalgebra makes leakage appear; rotating
-it by an automorphism keeps leakage at zero while everything else moves.
-Watching leakage, associator, commutator, norm and zero-divisor structure
-change as the slice moves is the "meaningful morph".
+Two organising ideas:
 
-### What desktop adds over the phone spec
+- **A subalgebra is a subspace with zero leakage** (products of elements in
+  the subspace stay in the subspace). Rotating a slice off a subalgebra
+  makes leakage appear; rotating by an automorphism keeps it at zero while
+  everything else moves.
+- **For basis-closed algebras the whole non-associative structure is a
+  finite, exact object.** Every basis triad has a signed associator; its
+  pattern under permutation (Wilmot's Types 1/2/3 and A/B/C/X), its 3-cycle
+  silo, its modes, and the subalgebra it generates (ℍ, 𝕆, P₄, P₁₂, P₁₄)
+  can all be computed, counted and drawn, and the counts checked against
+  the literature.
 
-- **Compute.** Dimension cap rises from 64 to 256 on CPU and to 3D grids of
-  64³ samples via GPU compute. Numerical searches (all subalgebras of a
-  given dimension, zero-divisor varieties, derivation algebras) run
-  interactively instead of being precomputed.
-- **Space.** A docked, multi-pane workspace with linked views: canvas,
-  leakage landscape, multiplication table, structure graph, subalgebra
-  lattice, facts, timeline, console. Two scenes side by side for comparison.
-- **Precision.** Keyboard and mouse: type exact elements, nudge angles by
-  keystroke, drag keyframes on a timeline.
-- **Depth.** A scripting console with the full engine API, exact rational
-  arithmetic for monomial algebras, exploration of the automorphism group
-  and its Lie algebra, and export of everything (images, video, tables,
-  LaTeX, JSON).
+### Headline targets
+
+1. **Wilmot's associator structure, 16 to 128.** G. P. Wilmot,
+   *Structure of the Cayley–Dickson algebras* (arXiv:2505.11747v3): the
+   graded construction, three classes of unordered associativity and four
+   non-associative types, the eight 3-triad-cycle silos, the Moufang and
+   Mal'cev correspondences, the quasi-octonion subalgebras P₄, P₁₂, P₁₄
+   and the projection theorem, and the zero-divisor count
+   Z_m = (N−1)(N−3)(N−7)/16 with its cycle/mode reduction to seven primary
+   pairs in 𝕊. The app must compute all of this from the multiplication
+   table and reproduce the paper's Tables 2, 4, 5, 6 and 14 for 𝕆, U₁ (16),
+   U₂ (32), U₃ (64) and U₄ (128), and the split cases of §5 of the paper.
+2. **The mirror sedenions.** Lui, *The mirror sedenions: a second
+   G₂-symmetric doubling of the octonions and the geometry of its zero
+   divisors* (working draft, 2026): the mirror double M(A), the embedding
+   M(A) ≅ A + A(ee′) ⊂ CD²(A), Bales's eight products yielding exactly 𝕊 and
+   𝕊′, the five-level stretch spectrum, Z(𝕊′) = S⁶ × S⁷ against V₂(ℝ⁷) for
+   𝕊, annihilator dimensions 2/6 against 4, the pair manifold V₂(ℝ⁷) × S³
+   against G₂, the octave configurations in PG(3,2), Aut(𝕊′) = G₂ × ℤ/2,
+   the orientation bit χ, and the graded-isomorphism search over GL(4,2).
+   The app must construct 𝕊′ both directly and as the hyperplane
+   S_γ ⊂ 𝕋 spanned by e₀…e₇, e₂₄…e₃₁, verify every finite statement of the
+   paper's Appendix A, and let the user *see* the difference between 𝕊 and
+   𝕊′ in slices, spectra, zero-divisor sets, and tables.
 
 ### Goals
 
-- Exact, testable algebra engine (structure constants, not hand-coded cases).
-- One consistent visual language across all algebras so differences show up
-  by comparison (ℂ vs split-ℂ vs dual numbers; ℍ vs 𝕆 vs 𝕊).
-- Everything the user can click can also be scripted; every scene is data.
-- Offline and self-contained. No accounts, no network.
+- Exact, testable engine; all counts in the two papers are CI tests.
+- One visual language so 𝕊 and 𝕊′, or U₁ and U₂, differ visibly under the
+  same view.
+- Everything clickable is scriptable; every scene is data.
+- Offline and self-contained.
 
 ### Non-goals (v1)
 
-- Non-real base fields, infinite-dimensional algebras.
-- A general computer algebra system. Arithmetic is exact for monomial
-  algebras (integer signs, rational coefficients) and floating point
-  elsewhere.
-- Collaborative or cloud features.
+- Non-real base fields; infinite-dimensional algebras.
+- A general CAS. Arithmetic is exact (integer signs, bigint rationals,
+  𝔽₂ linear algebra) for basis-closed algebras and floating point elsewhere.
+- A Python bridge. The console is JavaScript running the same engine as the
+  UI. The existing NumPy/SymPy verification scripts (`cd.py`, `f2iso.py`,
+  `check1–12`, `sym_spectrum.py`) and Wilmot's `geoalg` calculator are
+  used as **external oracles in CI**, not embedded: their outputs become
+  fixtures the engine must match.
 
 ---
 
 ## 2. Core interaction model
 
-Four verbs, each a toolbar section; all views stay live while any of them
-changes.
-
 | Verb | The user chooses | Linked views update |
 |------|------------------|---------------------|
-| **Set** | Ambient algebra A (dim n) | Table, structure graph, facts, lattice |
-| **Slice** | Subalgebra B ⊂ A and a display frame F (≤ 3 axes, or 4 with a 4D projection) | Canvas, table highlight, lattice selection |
-| **Rotate** | Rotation mode and parameter(s), scrubbed, animated, or keyframed | Canvas, leakage landscape, structure graph |
-| **Observe** | The observable(s) drawn on the slice | Canvas layers, inspector |
+| **Set** | Ambient algebra A (dim n ≤ 256, UI tuned to 128) | Table, structure graph, facts, lattice, triad explorer, zero-divisor catalog |
+| **Slice** | Subalgebra B ⊂ A and a display frame F (≤ 3 axes, or 4 with projection) | Canvas, table highlight, lattice and triad masks |
+| **Rotate** | Rotation mode and parameters, scrubbed, animated or keyframed | Canvas, leakage landscape, structure graph |
+| **Observe** | Observables drawn on the slice | Canvas layers, inspector |
 
 A **scene** = (algebra, subalgebra, frame, rotation state, observables,
-camera, layout). Scenes are JSON, saved in a project file, undoable, and
-addressable from the console.
+camera, layout); a **project** = scenes + notebook + cached analyses.
+Everything is JSON, undoable and console-addressable.
 
 ---
 
@@ -79,342 +96,468 @@ addressable from the console.
 
 ### 3.1 Algebra representation
 
-An algebra is A = (ℝⁿ, basis e₀…e_{n−1}, product). Two storage forms:
+Three storage forms, chosen automatically by the constructor:
 
-- **Monomial table (primary, exact).** e_i e_j = s_{ij} · e_{k(i,j)} with
-  s_{ij} ∈ {−1, 0, +1}, stored as two n×n integer arrays. Covers every
-  Cayley–Dickson algebra (standard, split, dual), every Clifford algebra
-  Cl(p,q,r), and tensor products and direct sums of these. Elements with
-  rational coefficients multiply exactly (bigint rationals) when the user
-  enables exact mode.
-- **Dense structure constants (fallback).** c_{ij}^k as an n×n×n float
-  array. Used for custom algebras, Lie algebras with bracket as product,
-  Jordan algebras, and anything the monomial form cannot express.
+- **Twisted group algebra of 𝔽₂ᵐ (primary for the Cayley–Dickson family).**
+  Basis e_g, g ∈ G = 𝔽₂ᵐ, product e_g e_h = F(g,h) e_{g⊕h} with a sign
+  function F: G × G → {±1} (or {±1, 0} for degenerate doublings). Covers
+  𝕆, 𝕊, U_m, 𝕊′, M(ℍ), every Bales product, every word in {CD, M}, every
+  split A_{q,p}, and arbitrary user sign functions. Stored as an n×n int8
+  array. Exact integer arithmetic; 𝔽₂ linear algebra for subalgebras and
+  graded maps.
+- **Monomial table.** e_i e_j = s_{ij} e_{k(i,j)}, s ∈ {−1,0,+1}, for
+  Clifford algebras Cl(p,q,r) and tensor/direct products of monomial
+  algebras (index map is not XOR in general).
+- **Dense structure constants** c_{ij}^k for custom tables, Lie and Jordan
+  algebras.
 
-Derived metadata: unit element, conjugation involution (from the
-constructor), norm form N(x) = scalar part of x·x̄ when scalar-valued,
-grading (Clifford), and the fingerprint of §3.7.
+Two index notations are supported everywhere and switchable in every view:
+the bitmask notation e_g (Lui, Cawagas: e₁…e₁₅, ℓ = e₈, e′ = e₁₆) and
+Wilmot's graded notation o_α with α ⊂ {1..m} (o₁ = i, o₂ = j, o₁₂ = ij,
+o₃ = −l, …), related by g = bitmask(α). Wilmot's equation (20) is the
+identity map under this convention and is a unit test.
+
+Derived metadata: unit, involution ¯x (from the doubling), norm N(x) = x x̄
+when scalar, grade (Wilmot's k-grade = popcount of g; Clifford blade grade),
+doubling point(s) ℓ, and the fingerprint of §3.7.
 
 ### 3.2 Constructors (the preset catalog)
 
 | Constructor | Parameters | Produces |
 |-------------|-----------|----------|
-| `CayleyDickson(γ₁,…,γ_m)` | each γ ∈ {+1, −1, 0} | 2^m-dim. (+1)=ℂ, (−1)=split-ℂ, (0)=dual; (+1,+1)=ℍ, (+1,−1)=split-ℍ; (+1,+1,+1)=𝕆; four +1's = 𝕊; five = trigintaduonions (32); up to eight steps (256) |
-| `Clifford(p,q,r)` | metric signature | 2^{p+q+r}-dim geometric algebra: Cl(2,0), Cl(3,0), Cl(0,2)≅ℍ, Cl(1,3) spacetime, Cl(3,0,1) PGA, Cl(4,1) CGA, up to p+q+r = 8 |
-| `Tensor(A,B)` | two algebras | ℂ⊗ℂ tessarines, ℍ⊗ℂ biquaternions, ℍ⊗Dual dual quaternions, 𝕆⊗ℂ bioctonions |
-| `DirectSum(A,B)` | two algebras | componentwise product |
-| `Matrix(k, F)` | k, F ∈ {ℝ, ℂ, ℍ} | matrix algebra with matrix-unit basis, for isomorphism comparisons |
-| `Lie(g)` | preset or structure constants | bracket as product (so(3), su(2), sl(2), 𝔤₂ from Der(𝕆)) |
-| `Custom(table)` | user-entered or scripted | dense algebra, validated for consistency |
+| `CD(A, ε)` | base algebra, ε ∈ {+1, −1, 0} | Cayley–Dickson double with (a,b)(c,d) = (ac − ε d̄ b, da + b c̄); ε = +1 standard, −1 split (unitary generator u, u² = +1), 0 dual |
+| `M(A)` | base algebra | **Mirror double**: (a + bℓ)(c + dℓ) = (ca − d̄ b) + (da + b c̄)ℓ. M(ℍ) = quasi-octonions (Cawagas's Õ = Chan–Đoković S₈ = Wilmot's P₄); M(𝕆) = 𝕊′ |
+| `Bales(A, P)` | base, P ∈ {P₀,P₁,P₂,P₃,P₀ᵀ,P₁ᵀ,P₂ᵀ,P₃ᵀ} or any of the 32 candidate formulas | one doubling step with the chosen product; P₃ᵀ = CD, P₁ᵀ = M |
+| `Tower(word)` | word over {CD, M, CDsplit, …} applied to a base | e.g. CD⁴(ℝ) = 𝕊, CD³·M = 𝕊′, M∘M(ℍ), the uniform P₁ᵀ tower, A_{q,p} split towers |
+| `Ultronion(m)` | m ≥ 1 | U_m = CD^{m+3}(ℝ): U₁ = 𝕊 (16), U₂ = 𝕋 (32), U₃ (64), U₄ (128), U₅ (256) |
+| `SignFunction(F)` | F on 𝔽₂ᵐ × 𝔽₂ᵐ | any twisted group algebra; used by the sign-function census |
+| `Clifford(p,q,r)` | signature | Cl(p,q,r) up to 2⁸ dims |
+| `Tensor`, `DirectSum`, `Matrix(k,F)`, `Lie(g)`, `Custom(table)` | as before | tessarines, biquaternions, dual quaternions, M₂(ℝ), so(3), 𝔤₂ from Der(𝕆), user tables |
 
-Cayley–Dickson product convention (fixed, shown in-app):
-
-    (a, b)(c, d) = (a c − γ d̄ b,  d a + b c̄),   conj(a, b) = (ā, −b)
-
-Basis ordering is the standard recursive one, so for 𝕆 the imaginary units
-satisfy e_i e_j = ±e_{i XOR j}. Clifford blades are indexed by bitmask.
+Conventions fixed and shown in-app: Convention 2.1 of the mirror paper for
+𝕆 (oriented Fano lines e₁e₂ = e₃, e₁e₄ = e₅, e₂e₄ = e₆, e₃e₄ = e₇,
+e₁e₇ = e₆, e₂e₅ = e₇, e₃e₆ = e₅) and Wilmot's Lemma 2 (o_α o_n = +o_{α∪n}
+for n above every index of α). Both agree with `CD` above.
 
 ### 3.3 Element operations
 
-mul, add, scale, conj, norm, inverse (via norm for composition algebras;
-otherwise solve L_x y = 1), exp and log (scaling-and-squaring; Padé where
-needed), integer and real powers, left/right multiplication matrices L_x,
-R_x, commutator, associator, Jordan product, and the bilinear forms
-⟨x,y⟩ = Re(x ȳ) where defined. All are pure functions; exact-mode
-variants exist for monomial algebras.
+mul, add, conj, norm, inverse (via norm, else solve L_x y = 1), exp, log,
+powers, L_x, R_x, commutator, associator [x,y,z] = (xy)z − x(yz),
+alternator alt_x = [x, x, ·], the **stretch operator** L_x̄ L_x / N(x)
+with its spectrum, annihilator Ann(x) = ker L_x with dimension, minimal
+polynomial, trace t(x) and the quadratic identity x² − 2t(x)x + N(x) = 0
+where it holds. Exact-mode variants for basis-closed algebras.
 
-### 3.4 Computed properties (the Facts panel)
+### 3.4 Computed properties (Facts panel)
 
-Each is a numeric residual over all basis triples (exact zero test in exact
-mode), reported with the residual and with a witness when false:
+Global identities with residual and witness: commutative, associative,
+alternative, flexible, power-associative (checked to degree 4 and by
+[x,x,x] = 0), quadratic, Moufang (three forms), Jordan, Mal'cev on the
+commutator algebra, adjoint identity ⟨xy,z⟩ = ⟨y, x̄z⟩, composition law
+N(xy) = N(x)N(y), pure trace (Wilmot's Theorem 12: sum of squares of pure
+basis elements). Zero divisors exist (witness). Center, nuclei. Der(A)
+with its Lie structure and Killing form (recognise 𝔤₂, so(3), so(4), the
+6-dimensional Der of M(ℍ)). Recognised isomorphism type (§3.7).
 
-- commutative, associative, alternative, flexible, power-associative,
-  Moufang, Jordan identity, Lie identities (antisymmetry, Jacobi)
-- norm multiplicative (composition algebra)
-- zero divisors exist, with a witness found by minimising σ_min(L_x)
-- center, left/middle/right nucleus, commutant of a chosen element
-- idempotents and nilpotents (basis-aligned exactly; general ones by
-  numerical root finding from random starts)
-- derivation algebra Der(A): dimension, basis, and its own structure
-  constants as a Lie algebra, with Killing form signature and rank so that
-  𝔤₂, so(3), etc. can be recognised
-- recognised isomorphism type (§3.7)
-
-Checkpoints that become engine tests: ℍ associative; 𝕆 alternative and
-Moufang, not associative; 𝕊 flexible and power-associative, not
-alternative, has zero divisors, norm not multiplicative; dim Der(ℍ) = 3,
-dim Der(𝕆) = 14.
+Checkpoints that are tests: dim Der = 14 for 𝕊, 𝕊′ and all 32 Bales
+candidates over 𝕆; 6 for M(ℍ), M(M(ℍ)) and the uniform P₁ᵀ tower at 8
+and 16 dimensions; 3 for ℍ.
 
 ### 3.5 Subalgebras and slices
 
-**Subalgebra B ⊂ A:** a subspace closed under product, stored as an
-orthonormal basis (k × n). Sources:
+**Basis-closed subalgebras.** For twisted group algebras every linear
+subspace of 𝔽₂ᵐ spans a subalgebra; enumeration is over subspaces
+(Gaussian binomials: 11 811 three-dimensional subspaces of 𝔽₂⁷ give the
+11 811 eight-dimensional basis subalgebras of U₄). Each is classified by
+its own sign function (fingerprint §3.7, triad counts §3.8): quaternion
+vs anti-quaternion lines, octonion vs quasi-octonion hyperplanes, 𝕊 vs 𝕊′
+vs other 16-dimensional types, and so on. Named subalgebras (even part,
+center, nucleus, ℝ[x], commutant) and numerically found ones (leakage
+minimisation on Gr(k, n)) as before.
 
-- *Basis-aligned enumeration.* For monomial algebras, closure of every
-  subset of ≤ 4 basis elements, computed combinatorially and organised into
-  a lattice. 𝕆: ℝ, 7 ℂ, 7 ℍ, 𝕆. 𝕊: ℝ, 15 ℂ, 35 ℍ, 15 𝕆, 𝕊.
-- *Named.* Even subalgebra, center, nucleus, power subalgebra ℝ[x],
-  commutant of x, span of chosen Clifford grades.
-- *Generated.* Closure of arbitrary elements by iterated span + product.
-- *Found numerically.* Minimise leakage over the Grassmannian Gr(k, n) from
-  many random starts, cluster the zeros, and report the families found
-  (for example the 8-dimensional family of quaternion subalgebras of 𝕆,
-  which is G₂/SO(4)). This is the desktop-only "subalgebra search".
+**Leakage** Λ(S) = (1/k²) Σ ‖(I − P_S)(s_a s_b)‖² over an orthonormal
+basis; Λ = 0 iff S is a subalgebra.
 
-**Leakage** of any subspace S with orthonormal basis s₁…s_k:
-
-    Λ(S) = (1/k²) Σ_{a,b} ‖ (I − P_S)(s_a s_b) ‖²
-
-Λ(S) = 0 iff S is a subalgebra. It is the primary scalar shown during
-rotation, and the objective for subalgebra search.
-
-**Display frame F:** an ordered orthonormal set of up to 3 directions
-(or 4, rendered through a chosen 4D→3D projection: orthographic drop,
-perspective, or stereographic). A product landing in A decomposes into
-channels that drive rendering: displayed coordinates, real part, hidden-in-B,
-and leak (outside B).
+**Display frame** F of ≤ 3 (or 4, projected) orthonormal directions; a
+product decomposes into displayed, real, hidden-in-B and leak channels.
+For x = a + bℓ in a doubled algebra the inspector also shows the paper's
+coordinates: a₀, |a′|, |b|, |b∥| (projection of b onto ℂ_a = ℝ + ℝa′).
 
 ### 3.6 Rotation modes
 
-| Mode | Acts on | Path | Preserves B? | Teaches |
-|------|---------|------|--------------|---------|
-| **Tilt** | frame | exp(θ · f_i ∧ v) in SO(n), tilting axis f_i toward an off-slice direction v; two-parameter tilts (θ, φ) toward two directions drive the leakage landscape | no (generically) | Why B is special; families of subalgebras appear as zero curves in the landscape |
-| **Automorphism flow** | frame and points | exp(t D) for D a user-weighted combination of the Der(A) basis; conjugation x ↦ u x u⁻¹ when associative | yes | Symmetry of A: G₂ on the Fano plane, SO(3) on Im ℍ |
-| **Multiplicative flow** | points | x ↦ exp(t u)·x or x·exp(t u) | not an isometry in general | Rotation vs boost vs shear; isoclinic rotations of ℝ⁴ |
-| **Custom path** | frame or points | any scripted t ↦ M(t) ∈ GL(n) from the console | as scripted | Anything |
-| **Camera orbit** | view only | SO(3) on screen | n/a | none; kept visibly separate |
+Tilt (exp(θ f_i ∧ v), with the two-parameter leakage landscape),
+automorphism flow (exp(tD), D from a Der(A) basis; the diagonal G₂ on
+doubled algebras; Brown's order-three automorphism of 𝕊 as a discrete
+step, shown to fail on 𝕊′ via the automorphism-defect readout),
+multiplicative flow (x ↦ exp(tu)x), custom scripted paths, and camera
+orbit, as in v0.3. Multiple parameters bind to timeline tracks.
 
-For non-associative A the automorphism defect ‖φ(xy) − φ(x)φ(y)‖ is shown
-whenever conjugation is used. Multiple rotation parameters can be bound to
-the timeline as keyframed tracks.
+### 3.7 Isomorphism-type recognition and graded isomorphism search
 
-### 3.7 Isomorphism-type recognition
+Fingerprint: (dim, identities, zero divisors, square signature, dim center,
+dim nucleus, dim Der with Killing signature, triad-type counts of §3.8,
+octave configuration of §3.10). Matched against a table of known algebras
+including ℍ, 𝕆, split forms, M(ℍ) = P₄, P₁₂, P₁₄, 𝕊, 𝕊′, M(M(ℍ)).
 
-Fingerprint of a (sub)algebra: (dim, commutative, associative,
-alternative, has zero divisors, square-signature counts of +1/−1/0 over
-an orthogonalised basis, dim center, dim nucleus, dim Der, Killing
-signature of Der). Matched against a table of known algebras; unmatched
-ones are labelled with the fingerprint. The **isomorphism explorer** (v1.1)
-searches for an explicit basis change between two algebras with equal
-fingerprints and shows it as a matrix.
+**Graded isomorphism search** (exact, over 𝔽₂): for twisted group algebras
+A, A′ on 𝔽₂ᵐ, a graded isomorphism is e_g ↦ λ(g) e_{σg} with σ ∈ GL(m,2),
+λ: G → {±1}; for fixed σ the condition
+F′(σg, σh) λ(g⊕h) = F(g,h) λ(g) λ(h) is a linear system over 𝔽₂ for λ.
+The engine enumerates σ (20 160 for m = 4; 9 999 360 for m = 5, in a
+worker; m = 6 by pruning on invariants: σ must preserve the octave and
+quaternion-line configurations, which cuts GL(6,2) to a manageable
+stabiliser coset search) and reports all solutions, so it can state
+"no graded isomorphism 𝕊 → 𝕊′" and count the graded automorphism group
+(2688 = 168·16 for both 𝕊 and 𝕊′). A general (non-graded) isomorphism
+search by numerical optimisation remains available as a fallback.
+
+### 3.8 Triad structure (Wilmot)
+
+All definitions follow the paper; the engine implements them literally so
+the paper's tables are reproducible.
+
+- **Blades and triads.** Pure basis elements (blades) b < c < d in the
+  graded order with a = bcd non-scalar (d ≠ bc) form a **triad**; there
+  are C(N,3) of them, N = 2ᵐ − 1. Triads with d = bc are the associative
+  (quaternion or anti-quaternion) rings.
+- **Unordered associativity classes (Theorem 2, Table 1).** Type 1:
+  [b,a,c] ≈ [b,d,c] ≈ [a,b,d] ≈ [a,c,d]; Type 2: [a,b,c] ≈ [b,c,d] ≈
+  [b,a,d] ≈ [a,d,c]; Type 3: [a,c,b] ≈ [c,b,d] ≈ [a,d,b] ≈ [c,a,d], where
+  ≈ means both zero or both non-zero. Representatives used by the engine:
+  Type 1 ← [b,d,c], Type 2 ← [b,c,d], Type 3 ← [c,b,d]; the engine also
+  verifies the full equivalence classes on every triad as a self-test.
+  Triple associator T(b,c,d) = [b,d,c] − [d,c,b] + [c,b,d]; a triad is
+  associative iff T = 0.
+- **Non-associativity types (Theorem 5).** A non-associative triad has
+  either exactly one Type non-zero or all three: A (Type 1 only),
+  B (Type 2 only), C (Type 3 only), X (all three). Octonions are all X.
+- **Moufang and Mal'cev (Theorem 6, eq. 10).** Per triad: Moufang 1
+  d(b(dc)) = (db)(dc) ⇔ B or X; Moufang 2 b(d(cd)) = ((bd)c)d ⇔ C or X;
+  Moufang 3 (db)(cd) = (d(bc))d ⇔ B or X when the Mal'cev identity
+  (bc)(db) = −((bc)d)b holds, A or C otherwise. All are computed and shown
+  per triad, so the correspondence is itself a displayed check.
+- **3-cycles and silos (Theorem 7).** Pairs form 3-cycles (b,c), (b,bc),
+  (c,bc); a 3-triad cycle is (b,c,d), (b,bc,d), (c,bc,d) with
+  b < c < bc < d; triads with d < bc are non-cycles. The type triple of a
+  cycle is its silo; only AAA, ACC, XBB, BBA, BXC, CAB, CCX, XXX occur.
+  The engine tabulates silo counts and non-cycle type counts per algebra
+  (paper Table 4) and associative / non-cycle / cycle totals (Table 2).
+- **Subalgebra generated by a triad (Theorems 3, 4, 9).** Any triad
+  generates an 8-dimensional basis subalgebra isomorphic or
+  anti-isomorphic to ℍ, 𝕆, P₄, P₁₂ or P₁₄, identified by its 28 triad
+  types (Table 6: 𝕆 = 28X; P₄ = 12A,12C,4X; P₁₂ = 8A,8B,8C,4X;
+  P₁₄ = 7A,10B,7C,4X) and by its silo decomposition. Counts of ℍ, 𝕆, P₄,
+  P₁₂, P₁₄ copies per algebra (Table 5) and the recurrence
+  S_{m+1} = 7(O_m + S_m) (Theorem 8) are tests. Wilmot's explicit
+  generating triads for the 8 octonion and 7 P₄ copies in 𝕊 are the
+  default labels of those subalgebras.
+- **Zero-divisor pairs (Theorem 10, Definition of modes, Theorem 11).**
+  Two-term zero divisors (a + b)(c + d) = 0 with a, b, c, d distinct
+  scaled blades, a² = b², c² = d², reduce to ac = −bd and to Type 3
+  associativity of the underlying triad, hence to A or B triads. Modes:
+  prime (a+b)(c+d), dual (−d+b)(c+a), extended (a′+b)(c+|db|) with
+  a′ = bc|db|, extended-dual (−|db|+b)(c+a′). The engine enumerates all
+  pairs (O(n³) via a⊕b = c⊕d), groups by 3-triad cycle and mode, reports
+  the primaries (7 for U₁, 147 for U₂), and checks
+  Z_m = (N−1)(N−3)(N−7)/16 = 12·S_m against the enumeration (Table 14:
+  84, 1 260, 13 020, 117 180 for U₁…U₄). de Marrais's 42 assessors are
+  the same objects in 𝕊 and are labelled as such.
+- **Split algebras (§5 of the paper).** Unitary generators u_i (u² = +1),
+  the pure-trace theorem, split octonions with 12 zero-divisor pairs,
+  A_{0,4} with 180 and A_{3,1} with 84, the isomorphisms among the split
+  sedenions, idempotents (1 + u_α) and the nilpotent left ideals. All are
+  tests.
+
+**Triad explorer** (view): the C(N,3) triads as a filterable table and as
+the τ tensor (n×n slices for fixed third element), coloured by A/B/C/X;
+silo and mode grouping; Moufang/Mal'cev bits; click a triad to load its
+generated subalgebra, its 3-triad cycle, and its zero-divisor pairs into
+the other views. Masking by the selected subalgebra shows an octonion
+copy as an all-X block and a P₄ copy as a 12A/12C/4X block.
+
+### 3.9 The mirror double and the sedenion pair (Lui)
+
+- **Construction.** M(A) as in §3.2; Proposition 3.2 (unital, quadratic,
+  involution anti-automorphic, N(a+bℓ) = N(a)+N(b), x² = 2a₀x − N(x)) is
+  checked on every M(A) the user builds.
+- **Embedding (Theorem 3.3).** Φ(a + bℓ) = ā + (be)e′ maps M(A)
+  isomorphically onto A + A(ee′) ⊂ CD²(A), with (a+bj)(c+dj) =
+  (ac − b d̄) + (ad + c̄ b)j for j = ee′. The engine constructs 𝕊′ both
+  by `M(𝕆)` and as the hyperplane S_γ ⊂ 𝕋 spanned by e₀…e₇, e₂₄…e₃₁,
+  exhibits Φ, and verifies it is a *-isomorphism. Likewise M(ℍ) as
+  ℍ + ℍ(εℓ) ⊂ 𝕊.
+- **Bales census (Theorem 3.6).** All 32 candidate doubling formulas
+  applied to 𝕆: the eight admissible ones fall into two classes
+  {P₀, P₃, P₀ᵀ, P₃ᵀ} → 𝕊 and {P₁, P₂, P₂ᵀ, P₁ᵀ} → 𝕊′ with the stated
+  isomorphisms a+bℓ ↦ ā+bℓ etc.; the other 24 give unital algebras with
+  x x̄ = N(x), anticommuting units, dim Der = 14, but some basis line not a
+  quaternion algebra; 20 have only the founding octave, 4 have eight
+  octonion hyperplanes but are not graded-isomorphic to 𝕊 or 𝕊′. All
+  reproduced by the engine and displayed as a 32-row census table.
+- **Orientation tree (Remark 3.5, 3.8, Question 2).** Words in {CD, M}
+  applied to 𝕆: at dimension 16 the four words give 𝕊 (twice, with the
+  explicit signed relabelling CD(M(ℍ)) → 𝕊), 𝕊′ and M(M(ℍ)); the app
+  builds the full tree to dimension 128 (2⁴ words at 128), fingerprints
+  and graded-classifies each node, and reports which have Der = 𝔤₂. This
+  is a direct attack on the paper's open Question 2.
+- **Orientation bit (Prop. 7.3).** F_{𝕊′} = F_𝕊 · χ with χ = −1 on
+  distinct non-zero pairs of the founding 𝔽₂³ and +1 elsewhere; the
+  engine displays χ as a mask on the 16×16 table, checks that χ is not a
+  2-cocycle, and computes the associator functions ϕ = ∂F (both +1 on
+  exactly 168 of the 420 independent triples; neither trilinear).
+- **Graded automorphisms (Prop. 7.4).** Order 2688 for both 𝕊 and 𝕊′;
+  no graded isomorphism 𝕊 → 𝕊′ (exhaustive over GL(4,2)). Uses §3.7.
+- **Automorphisms (Theorem 7.1, Remark 7.2, Theorem 8.1).**
+  Aut(𝕊′) = G₂ × ℤ/2 acting diagonally; the sign flip ε: a+bℓ ↦ a−bℓ;
+  Brown's order-three element of Aut(𝕊) (rotation by 2π/3 in each plane
+  ℝq + ℝqℓ) constructed explicitly and shown to fail on 𝕊′; for M(ℍ) the
+  6-dimensional group a+bℓ ↦ φ(a) + (qφ(b))ℓ.
+- **Sign-function census (ref. [16], Question 2).** Enumerate sign
+  functions on 𝔽₂⁴ whose basis lines are all quaternion or
+  anti-quaternion, classify by octave count and dim Der, and confirm 𝕊 and
+  𝕊′ are the only ones with eight octaves and dim Der = 14. Same engine at
+  𝔽₂⁵ with pruning, as far as it will go, to see whether the pattern
+  continues.
+
+### 3.10 Geometry of zero divisors (Lui, Moreno, Biss–Dugger–Isaksen)
+
+Continuous structure on the sedenion pair and on any doubled algebra:
+
+- **Stretch spectrum (Theorem 4.1, Remark 4.2).** Eigenvalues of
+  L_x̄ L_x / N: for 𝕊′ {1 ± σ, 1 ± τ, 1} with multiplicities 2,2,4,4,4,
+  σ = 2|a′||b|/N, τ = 2|a′||b∥|/N; for 𝕊 {1 ± s, 1} with 4,4,8,
+  s = 2|a′ × b′|/N. Computed numerically at any x and compared to the
+  closed forms; the characteristic polynomials in normal form are tests.
+  ker alt_x for generic x is a quaternion subalgebra in 𝕊′ and an octonion
+  subalgebra in 𝕊 (both checked to be composition subalgebras).
+- **Dead set Z(A).** Norm-one zero divisors: for 𝕊′ the condition
+  Re a = 0, |a| = |b| (S⁶ × S⁷, dimension 13); for 𝕊 additionally a ⊥ b
+  (V₂(ℝ⁷), dimension 11). The engine samples Z, estimates its dimension
+  from the rank of the differential, and reports 13 vs 11.
+- **Annihilators (Theorem 5.2).** dim Ann(x) as an integer field: 2
+  generically and 6 on the locus b ∈ ℂ_u for 𝕊′; 4 for 𝕊. The closed
+  form Ann(u + bℓ) = {nu + (bn)ℓ : n ∈ Im 𝕆, n ⊥ u, [b,n,u] = 0} is
+  checked against ker L_x.
+- **Pair manifold P(A) (Theorem 5.5).** Sample pairs (x,y) of norm-one
+  elements with xy = 0; estimate tangent dimension (14 for both);
+  exhibit Ψ(u,n,q) and its inverse; show the fibres S¹ / S⁵ of
+  (x,y) ↦ x and the fibration over the quaternion Grassmannian
+  G₂/SO(4). Two-sidedness xy = 0 ⇒ yx = 0.
+- **Basis zero divisors (Prop. 5.4).** 84 two-term zero divisors in 𝕊
+  (42 assessors) vs 112 (56 index pairs) in 𝕊′; 336 ordered two-term
+  annihilating pairs in both. Cross-referenced with Wilmot's modes.
+- **Alternative elements (Cor. 4.3).** 𝕊′: 𝕆 ∪ (ℝ + 𝕆ℓ); 𝕊:
+  (ℝ + 𝕆ℓ) ∪ ⋃_u (ℂ_u + ℂ_u ℓ). Rendered as the zero set of ‖alt_x‖.
+- **Octaves (Theorem 6.1).** The 15 hyperplanes of 𝔽₂⁴: octonion iff
+  ℓ ∉ H for 𝕊′ ("all planes avoiding a point"), iff H = V or ℓ ∈ H for 𝕊
+  ("all planes through a point, plus one"); the other seven are M(ℍ) in
+  both. Drawn on the PG(3,2) structure graph; the GL(4,2) stabilisers
+  (orders 1344 vs 168) reported.
+- **Higher mirrors (Question 3).** M(𝕊), M(𝕊′) ⊂ CD⁶(ℝ) (64 dims):
+  annihilator-dimension statistics to test the conjecture
+  dim Ann ≡ 0 (mod 2) rather than (mod 4).
+
+**Views for this section:** *Stretch spectrum* panel (eigenvalues of the
+current inspector point as a level diagram with multiplicities, and the
+closed-form prediction beside it); *Annihilator dimension* observable
+(integer colour map); *Zero-divisor set* observable (isosurface of
+σ_min(L_x), with the (a₀, |a′|, |b|) chart as an alternative 3D slice
+where Z is a plane curve for 𝕊′ and needs the extra angle for 𝕊);
+*Pair sampler* panel (P(A) samples, tangent dimensions, fibre dimensions).
 
 ---
 
 ## 4. Observables (fields on the slice)
 
-Sampled on a 2D grid (up to 256²) or 3D grid (up to 64³ on GPU, 24³ on
-CPU), layered on the canvas; several can be shown at once.
+As in v0.3 (square, multiply-by-u, norm, commutator, associator with (u,v),
+leakage density, exponential curves, power orbit, inverse, custom), plus:
 
 | Observable | Definition | Rendering | Reveals |
 |------------|-----------|-----------|---------|
-| Square | x ↦ x² | deformed lattice | imaginary-unit sphere, idempotents, nilpotents, hyperboloids in split forms |
-| Multiply by u | x ↦ u x or x u | deformed lattice + arrows | rotations, boosts, shears, isoclinic rotations |
-| Norm | N(x) | isosurface / contours | spheres, hyperboloids, null cones, parallel planes |
-| Commutator with u | [u, x] | arrows | where and how much commutativity fails |
-| Associator with (u, v) | [u, v, x] | colour + arrows | fails off Fano lines in 𝕆; everywhere in 𝕊 |
-| Leakage density | ‖(I − P_B)(x·x)‖, or averaged over y in the slice | colour map | closure defect point by point |
-| Zero-divisor field | σ_min(L_x), or log|det L_x| for large n | dark isosurface at 0 | null cones; the zero-divisor variety of 𝕊 |
-| Exponential curves | t ↦ exp(t x) for x on the unit sphere of the slice | curves | circles, hyperbolas, lines; one-parameter subgroups |
-| Power orbit | x, x², x³, … | polylines | power-associativity, periodicity |
-| Inverse | x ↦ x⁻¹ | deformed lattice, blank where undefined | invertibility boundary |
-| Custom | any scripted f: A → A or A → ℝ | user's choice | anything |
-
-The **inspector** (click a point) shows coordinates in all channels, the
-observable values, the full multiplication row of that element, L_x with
-its singular values, and the minimal polynomial (numerically) of x.
+| Stretch spectrum | eigenvalues of L_x̄L_x/N(x) | colour by number of distinct levels, or by σ, τ, s | 3-level (𝕊) vs 5-level (𝕊′) structure; zero divisors where an eigenvalue hits 0 |
+| Annihilator dimension | dim ker L_x (numerical rank) | integer colour map | the 2/6 stratification of 𝕊′, the constant 4 of 𝕊 |
+| Alternator norm | ‖alt_x‖ = ‖[x,x,·]‖ | isosurface at 0 | alternative elements |
+| Zero-divisor set | σ_min(L_x) | dark isosurface | Z(A) in any slice |
+| Triad type | for basis-aligned frames, colour cells of the product grid by the A/B/C/X type of the triad they complete | discrete colour | Wilmot's structure on the canvas |
 
 ---
 
 ## 5. Views (dockable panels)
 
-All panels are linked: selecting a basis element, subalgebra, or point in
-one highlights it in the others.
+Canvas · Leakage landscape · Multiplication table (with sign-function
+overlays such as χ, and both index notations) · Structure graph (Fano
+plane, PG(3,2) for 16, PG(4,2) for 32; octave and quasi-octave hyperplanes
+coloured; 3-cycles as oriented triangles) · Subalgebra lattice (by
+isomorphism type: ℍ, 𝕆, P₄, P₁₂, P₁₄, 𝕊, 𝕊′, …) · Facts · Derivations ·
+**Triad explorer** (§3.8) · **Zero-divisor catalog** (pairs, assessors,
+cycles, modes, primaries) · **Stretch spectrum** · **Pair sampler** ·
+**Census** (Bales's 32 formulas; orientation tree; sign-function census;
+graded-isomorphism results) · Timeline · Console · Compare (two scenes
+sharing parameters; default pairing 𝕊 | 𝕊′).
 
-- **Canvas.** 3D (or projected 4D) view of the slice with layered
-  observables, axes labelled by their expansion in the standard basis,
-  a ghost of the previous frame position during rotation.
-- **Leakage landscape.** Heat map of Λ over a two-parameter tilt (θ, φ);
-  subalgebras are the zeros. Click anywhere to jump the frame there; drag
-  to scrub. This is the desktop-only view that makes families of
-  subalgebras visible at a glance.
-- **Multiplication table.** n×n grid coloured by sign, symbols on hover;
-  the subalgebra as a highlighted block, leakage cells outlined; sortable
-  by any permutation of the basis (drag columns); export as LaTeX/CSV.
-- **Structure graph.** Nodes = imaginary units, one line per triple with
-  e_i e_j = ±e_k. Fano plane for 𝕆, PG(3,2) for 𝕊 (35 lines, with the 15
-  Fano-plane substructures selectable). Automorphism flow animates it.
-- **Subalgebra lattice.** Hasse diagram of enumerated and found
-  subalgebras, grouped by isomorphism type, with counts.
-- **Facts.** The §3.4 property sheet, with witnesses that can be sent to
-  the inspector or canvas in one click.
-- **Derivations.** Basis of Der(A) as matrices, its bracket table, sliders
-  for a weighted combination to feed the automorphism flow.
-- **Timeline.** Keyframe tracks for every rotation parameter and camera;
-  play, loop, scrub, render to video.
-- **Console.** JavaScript REPL with the engine API (`A.mul(x, y)`,
-  `B = A.closure([...])`, `scene.frame.tilt(...)`, `plot(...)`) and a
-  scratch notebook of cells whose outputs (numbers, tables, scenes) are
-  kept in the project.
-- **Compare.** Two scenes side by side with shared rotation parameters and
-  camera, for ℂ vs split-ℂ, or the same subalgebra in 𝕆 and 𝕊.
-
-Default layout: canvas centre, landscape and lattice left, table and facts
-right, timeline and console bottom. Layouts are saved with the project.
+All panels are linked: a triad selected in the explorer highlights its
+three cells in the table, its triangle in the structure graph, its
+generated subalgebra in the lattice, and its zero-divisor pairs in the
+catalog and canvas.
 
 ---
 
 ## 6. Interaction
 
-- Mouse: drag orbits the camera, wheel zooms, right-drag pans; click
-  inspects; drag on the leakage landscape scrubs the tilt.
-- Keyboard: arrow keys nudge the active rotation parameter (Shift for
-  coarse, Alt for fine), space plays/pauses, digits 1–4 switch verbs,
-  Cmd/Ctrl-Z undo, Cmd/Ctrl-K opens the command palette (every action is
-  reachable by name).
-- Direct entry: any element field accepts expressions in the basis
-  (`1 + 2i - k`, `e3 + e10`), evaluated by the engine.
-- Export: PNG/SVG of any panel, MP4/WebM of the timeline, CSV/JSON of any
-  sampled field, LaTeX of tables and facts, the whole project as JSON.
-- Accessibility: colour-blind safe palettes with redundant shape/hatch
-  encoding of sign, adjustable font size, reduced-motion option.
+Mouse and keyboard as in v0.3; command palette; direct entry of elements
+in either notation (`e1 + e9`, `o1 - o1234`, `a + b*l` with a, b
+octonion expressions); export PNG/SVG/MP4, CSV/JSON of any table or field,
+LaTeX of tables (the paper tables regenerate from the engine), project
+JSON.
 
 ---
 
 ## 7. Guided tours (content for v1)
 
-Each tour is a sequence of scenes with a caption and a suggested
-experiment; tours are ordinary projects the user can fork.
-
-1. **The sphere of complex numbers inside ℍ.** Tilt i toward j; leakage
-   stays zero; the landscape shows a whole zero curve.
-2. **Seven quaternions in the octonions.** Select a Fano line, tilt off it,
-   the associator lights up; then run a G₂ derivation flow and watch it
-   stay closed while the Fano plane turns. Run subalgebra search and find
-   the 8-dimensional family.
-3. **Rotation, boost, shear.** ℂ, split-ℂ, dual numbers in Compare view
-   under multiplicative flow.
-4. **Where the norm breaks.** Sedenions: N(xy) ≠ N(x)N(y); find a zero
-   divisor by rotating a 3-slice until the dark surface appears; then map
-   the full zero-divisor variety with the search tool.
-5. **Spinors are even.** Cl(3,0): the even subalgebra is ℍ; square the odd
-   part and watch it land in the even part.
-6. **Same algebra, different clothes.** Split-ℍ, Cl(2,0), Cl(1,1), M₂(ℝ):
-   equal fingerprints, and the explicit isomorphisms.
-7. **Beyond the sedenions.** Trigintaduonions: how the lattice, Der(A) and
-   zero-divisor structure change from 16 to 32 dimensions.
+1. The sphere of complex numbers inside ℍ.
+2. Seven quaternions in the octonions; G₂ derivation flow.
+3. Rotation, boost, shear: ℂ, split-ℂ, dual numbers.
+4. Spinors are even: Cl(3,0).
+5. Same algebra, different clothes: split-ℍ, Cl(2,0), Cl(1,1), M₂(ℝ).
+6. **Wilmot I: types and silos.** From 𝕆 (all X) to 𝕊: the first A and C
+   triads, Type 1/2/3 associators side by side, the eight silos, the
+   Moufang identities separating.
+7. **Wilmot II: octonions and quasi-octonions in 𝕊.** The 8 + 7 split from
+   generating triads; P₄ as 12A/12C/4X; the 12 zero divisors of each P₄
+   copy; 7 × 12 = 84.
+8. **Wilmot III: 32 to 128.** P₁₂ appears in U₂, P₁₄ in U₃, the projection
+   theorem; Tables 4, 5 and 14 regenerated live up to U₄; the zero-divisor
+   formula Z_m against the enumeration.
+9. **Wilmot IV: split sedenions.** Unitary generators, pure trace, the
+   180 and 84 zero divisors of A_{0,4} and A_{3,1}, idempotents and ideals.
+10. **Mirror I: one letter.** Build 𝕊 and 𝕊′ from 𝕆 with the two products;
+    show χ on the table; show that no signed relabelling connects them.
+11. **Mirror II: inside 𝕋.** Find S_γ among the 31 hyperplanes, see the
+    embedding Φ, the octave configurations "through a point" vs "avoiding
+    a point" on PG(3,2).
+12. **Mirror III: the dead set.** Zero-divisor isosurfaces in matched
+    slices of 𝕊 and 𝕊′; the (a₀, |a′|, |b|) chart; annihilator dimension
+    2/6 vs 4; the stretch spectrum at a moving point.
+13. **Mirror IV: symmetry.** The diagonal G₂ flow on both; Brown's
+    order-three map succeeding on 𝕊 and failing on 𝕊′; the orientation
+    tree to 64 dimensions and the open question of which words give
+    Der = 𝔤₂.
+14. **Bales's eight products.** The 32-row census; two classes; the four
+    odd ones out.
 
 ---
 
 ## 8. Architecture
 
-Strict dependency direction: app → viz → core.
-
 ```
-core/        pure engine, no UI dependency, runs in Node for tests and CLI
-  algebra/   Algebra type, monomial + dense tables, constructors, exact mode
-  ops/       element operations, L_x/R_x, exp/log, inverse, minimal polynomial
-  linalg/    dense linear algebra: QR, SVD, null space, matrix exp, LU
+core/
+  algebra/   sign-function, monomial and dense representations; constructors
+             CD, M, Bales, Tower, Ultronion, SignFunction, Clifford, …;
+             both index notations
+  ops/       element ops, L_x/R_x, exp/log, stretch operator, annihilator
+  linalg/    dense QR/SVD/eig/null space; 𝔽₂ linear algebra (rank, solve,
+             subspace enumeration, GL(m,2) enumeration with stabiliser pruning)
   sub/       subspaces, closure, leakage, lattice, Grassmannian search,
-             fingerprint and recognition, isomorphism search
-  flow/      rotation modes as functions (state, t) -> frame / point map
-  fields/    observable samplers -> typed arrays (CPU) or GPU kernels
-  facts/     property checks with residuals and witnesses; Der(A)
-  script/    the console API surface, a thin typed facade over the above
-viz/         framework-free scene builder: samples -> render primitives
-             (point clouds, line sets, meshes, colour arrays), GPU field
-             evaluation kernels (WGSL, with GLSL fallback)
-app/         panels, docking, state store, project files, timeline, tours
-tools/       CLI (facts sheet, lattice dump, batch renders), test fixtures
+             fingerprint, graded isomorphism search
+  triads/    Wilmot module: triads, Types, A/B/C/X, T, Moufang/Mal'cev bits,
+             3-cycles, silos, generated subalgebra and P_k identification,
+             zero-divisor pairs, modes, primaries, Z_m, split variants
+  mirror/    Lui module: M(A), Φ embedding, Bales census, orientation tree,
+             χ and cocycle test, stretch spectrum closed forms, Z/Ann/P
+             samplers, octave configurations, Brown's map
+  flow/      rotation modes
+  fields/    observable samplers (CPU) and GPU kernels (WGSL)
+  facts/     identities with residuals and witnesses; Der(A)
+  script/    console API
+viz/         framework-free scene builder and GPU kernels
+app/         panels, docking, state, project files, timeline, tours
+tools/       CLI; oracle runners that execute the external Python scripts
+             (when present) and diff their output against engine fixtures
 ```
 
-State: one immutable project object (scenes, layout, notebook); every UI
-action is a reducer; the renderer is a pure function of scene + sampled
-field. This gives undo/redo, serialisation and scriptability for free.
-
-Heavy numerics (n ≥ 64 SVDs, Grassmannian search with thousands of starts,
-lattice enumeration for n = 128) run in worker threads with progress and
-cancellation; hot loops move to a Rust/WASM module when profiling shows a
-need (planned, not assumed).
+State: one immutable project object; reducers; renderer as a pure
+function. Heavy jobs (GL(5,2) search, U₄ triad tables, sign-function
+census, P(A) sampling) run in workers with progress and cancellation and
+cache results in the project. Rust/WASM for the 𝔽₂ searches if profiling
+demands it.
 
 ---
 
-## 9. Technology recommendation
+## 9. Technology (decided)
 
-**Recommended: Electron + TypeScript + React, three.js on WebGL2 for the
-canvas with WebGPU compute for field evaluation, a dockable panel library
-(e.g. Dockview or rc-dock), Monaco for the console.**
-
-Reasons:
-
-- Electron bundles Chromium, so WebGL2 and WebGPU behave identically on all
-  three platforms. A math-visualisation app should not debug platform
-  webview differences.
-- The engine is plain TypeScript, tested in Node, used by the CLI, and
-  exposed verbatim in the console: users script the same code the UI runs.
-- three.js covers point clouds, line sets, isosurfaces (marching cubes on
-  the GPU), custom shaders and video capture with little glue.
-- A browser build is a free by-product for sharing read-only scenes later.
-
-**Alternative A: Tauri.** Much smaller binary and lower memory. Cost:
-GPU feature parity depends on each OS webview (WebKit on macOS/Linux,
-WebView2 on Windows); WebGPU is not uniformly available. Choose only if
-binary size matters more than rendering consistency.
-
-**Alternative B: Python + Qt (PySide6) + VisPy/ModernGL + NumPy.** Best if
-the scripting console should be Python and NumPy/SymPy interop is the
-priority. Cost: packaging and startup, and a less polished docking/UI
-story.
-
-**Not recommended:** native C++/Rust UI from scratch; the UI surface here
-(docking, tables, editors, video export) is large and web tooling covers it.
+Electron + TypeScript + React; three.js on WebGL2 with WebGPU compute for
+field evaluation; Dockview for panels; Monaco for the console. Engine in
+plain TypeScript with typed arrays and bigint rationals; 𝔽₂ vectors as
+Uint32 bitsets.
 
 ---
 
 ## 10. Performance budget
 
-- Camera orbit: 60 fps; buffers re-uploaded only when the scene changes.
-- Scrubbing a rotation: ≥ 30 fps at 32³ for n ≤ 32 on CPU; 64³ for n ≤ 64
-  with GPU field evaluation (structure constants uploaded once as a
-  texture or storage buffer).
-- Leakage landscape: 256² tilt samples for n ≤ 64 in under 200 ms on a
-  worker, incremental refinement while dragging.
-- Zero-divisor field: σ_min via SVD for n ≤ 32; log|det| via LU above that.
-- Der(A): on the fly for n ≤ 64 (null space of an n³ × n² system); for
-  n = 128, 256 computed once per algebra in a worker and cached in the
-  project (minutes, with progress).
-- Subalgebra search: 1000 random starts on Gr(4, 8) in a few seconds;
-  progress bar and cancel for larger cases.
-- Cold start to first rendered scene: under 3 s.
+- Camera 60 fps; scrubbing ≥ 30 fps at 32³ for n ≤ 32 (CPU), 64³ for
+  n ≤ 64 (GPU); 24³ default at n = 128.
+- U₄ (128): 333 375 triads typed and siloed in under 2 s; 117 180
+  zero-divisor pairs enumerated and moded in under 2 s; 11 811 eight-dim
+  basis subalgebras classified in under 5 s; all in workers, cached.
+- Graded isomorphism search: m = 4 instant; m = 5 under a minute in a
+  worker; m = 6 only with pruning, reported as partial if the stabiliser
+  coset search exceeds a budget.
+- Der(A) by generator reduction for n ≥ 64 (unknowns n·log₂n); dim 14
+  expected across the CD tower and the mirror family with Der = 𝔤₂,
+  6 for the M(ℍ)-based ones.
+- Stretch spectrum at a point: 128×128 symmetric eigenproblem, under
+  10 ms; as a field on 16³ samples at n = 16, real time.
+- P(A) sampling: 10⁴ pairs with tangent-rank estimates in a few seconds.
 
 ---
 
 ## 11. Testing strategy
 
-The engine is the product; it gets the tests.
+The engine is the product; the two papers are the test oracles.
 
-- **Constructor identities.** Every preset's table against independent
-  reference computations: ℍ from i, j, k rules; 𝕆 Fano triples; Clifford
-  e_i² per signature; Cl(0,2) ≅ ℍ via explicit isomorphism; tensor
-  products against Kronecker products of L-matrices.
-- **Property checkpoints.** Expected true/false matrix of §3.4 for the
-  Cayley–Dickson tower to 32 dimensions, split and dual forms, Cl(p,q) for
-  p+q ≤ 4, tessarines, dual quaternions, biquaternions.
-- **Invariants.** dim Der(ℍ) = 3, dim Der(𝕆) = 14 with Killing form
-  negative definite of rank 2 (𝔤₂); dim center(ℂ⊗ℂ) = 4; subalgebra counts
-  for 𝕆 (7 ℂ, 7 ℍ) and 𝕊 (15 ℂ, 35 ℍ, 15 𝕆).
-- **Leakage.** Λ = 0 exactly (exact mode) for every enumerated subalgebra;
-  Λ > 0 for random subspaces; Λ invariant under automorphism flow to 1e-9;
-  Grassmannian search from a perturbed subalgebra converges back to it.
-- **Zero divisors.** Witness found in 𝕊 and every split algebra; none in
-  ℝ, ℂ, ℍ, 𝕆.
-- **Exact vs float.** Exact-mode products agree with float products on
-  random rational elements.
-- **Property-based tests.** Random elements: associator vanishes iff
-  flagged associative; exp(log x) = x near 1; L_{xy} = L_x L_y iff
-  associative.
-- **Viz snapshots.** Primitive counts and bounding boxes per observable;
-  GPU and CPU field evaluation agree to 1e-5.
-- **App smoke test.** Every tour step renders headlessly in CI.
+**Construction.** Convention 2.1 Fano lines; Wilmot's (20) index
+correspondence; `M(𝕆)` ≅ S_γ ⊂ 𝕋 via Φ; M(ℍ) ≅ ℍ + ℍ(εℓ) ⊂ 𝕊; the eight
+Bales products give exactly two algebras with the six stated
+isomorphisms; CD(M(ℍ)) ≅ 𝕊 by a signed relabelling; four words at
+dimension 16 give three algebras.
+
+**Wilmot tables** (𝕆, U₁–U₄; U₅ optional in nightly CI):
+- Table 2 (associative / non-cycle / cycle counts; totals = C(N,3)).
+- Table 4 (silo counts and non-cycle A/B/C/X counts; only eight silos).
+- Table 5 (ℍ, 𝕆, P₄, P₁₂, P₁₄ counts; S_{m+1} = 7(O_m + S_m)).
+- Table 6 (identification signatures of 𝕆, P₄, P₁₂, P₁₄).
+- Table 14 (non-associative triads, 28-factor, zero divisors, 84-factor);
+  Z_m formula; 𝕊: 455 = 35 + 84A + 112C + 224X; U₂: 4495 = 155 + 1092B +
+  336A + 1092C + 1820X; 147 distinct triples for U₂'s 1 260 pairs.
+- Tables 8–13 (the 84 sedenion pairs in graded form, the 7 primaries,
+  the U₂ primaries), Theorems 6 and 11 verified per triad.
+- §5: pure trace = 1 for split algebras; 12 pairs for split octonions;
+  180 for A_{0,4} with 39 primaries + 21 modes; 84 for A_{3,1} with 7
+  primaries; the split-sedenion isomorphisms.
+
+**Mirror paper (Appendix A, item by item):** unit, x x̄ = N, flexibility,
+power-associativity to degree 4, failure of alternativity and of the
+composition law, adjoint identity, for 𝕊 and 𝕊′; annihilator dimensions
+2/6 vs 4 and the closed form of Ann(u + bℓ); rank dμ = 16 on every
+stratum of P(𝕊′), tangent dimensions 14/13 (𝕊′) and 14/11 (𝕊);
+composition property of the 15 hyperplanes of each and of the 31 of 𝕋;
+dim Der = 14 for 𝕊, 𝕊′, all 32 candidates, and 6 for M(ℍ), the uniform
+P₁ᵀ tower, M(M(ℍ)); characteristic polynomials of alt_x in normal form
+(λ⁴(4a₁²(b₀²+b₁²) − λ²)⁴(4a₁²(b₀²+b₁²+b₂²) − λ²)² for 𝕊′,
+λ⁸(4a₁²b₂² − λ²)⁴ for 𝕊); Φ and the six Bales isomorphisms; the
+GL(4,2) search (order 2688, no 𝕊 → 𝕊′); 84/112/336; Brown's map on 𝕊
+and its failure on 𝕊′; Aut(M(ℍ)) elements; the quaternion-line failures
+of the 24 rejected formulas; ker alt_x a composition subalgebra of 𝕊;
+ϕ = ∂F values (+1 on 168 of 420) and non-trilinearity; χ not a 2-cocycle.
+
+**General:** leakage zero on every basis subalgebra; Λ invariant under
+Der flows; exact vs float agreement; property-based tests; viz snapshots;
+headless render of every tour step.
+
+**Oracle runners:** if `tools/oracle/wilmot/` (geoalg) or
+`tools/oracle/lui/` (cd.py, f2iso.py, check1–12, sym_spectrum.py) are
+present, CI runs them and diffs against the fixtures; otherwise the
+fixtures stand.
 
 ---
 
@@ -422,48 +565,87 @@ The engine is the product; it gets the tests.
 
 | Milestone | Deliverable | Exit criterion |
 |-----------|-------------|----------------|
-| M0 | This spec, repo skeleton, CI | Spec approved; `npm test` runs |
-| M1 | Core engine: constructors, ops, facts, closure, lattice, leakage, Der(A), fingerprint; CLI | All §11 engine tests pass; CLI prints facts and lattice for any preset |
-| M2 | App shell: docking, Set verb, table, structure graph, facts, console | Browse every preset; console runs engine calls |
-| M3 | Slice + canvas: frame selection, Square and Multiply observables, inspector, camera | Tour 1 playable |
-| M4 | Rotation: tilt, automorphism flow, multiplicative flow, leakage landscape, timeline scrub/play | Tours 1–3 playable |
-| M5 | Remaining observables, GPU field evaluation, subalgebra search, lattice UI, Compare view | Tours 4–7 playable |
-| M6 | Project files, undo, exports (image/video/LaTeX/CSV), keyframes, packaging for three platforms | v1.0 release builds |
-| v1.1 | Isomorphism explorer, 4D projections, Rust/WASM hot paths if profiling demands, Lie/Jordan presets, custom-path rotations | — |
+| M0 | Spec, repo skeleton, CI, fixture files transcribed from both papers | `npm test` runs the fixture suite (red) |
+| M1 | Engine: representations, constructors incl. M and Bales, ops, 𝔽₂ linalg, subalgebra lattice, fingerprints, Der, **triads module** complete for U₁–U₄, zero-divisor enumeration and modes, split variants; CLI regenerating Wilmot's tables | All Wilmot fixtures green through U₄ |
+| M2 | **Mirror module**: Φ, Bales census, orientation tree, χ, graded isomorphism search (m ≤ 5), stretch spectrum, Z/Ann/P samplers, octaves, Brown's map | All Appendix A fixtures green |
+| M3 | App shell: docking, Set, table with overlays, structure graph, facts, lattice, triad explorer, zero-divisor catalog, census panel, console | Tours 6–8, 10, 11, 14 playable in discrete views |
+| M4 | Slice + canvas: frames, observables incl. stretch spectrum, annihilator dimension, zero-divisor set; inspector with paper coordinates | Tours 1, 12 playable |
+| M5 | Rotation modes, leakage landscape, Der flows incl. diagonal G₂ and Brown's step, timeline, Compare | Tours 2, 3, 13 playable |
+| M6 | GPU fields, subalgebra search, higher mirrors at 64, sign-function census, exports, packaging | Tours 4, 5, 9 playable; v1.0 builds |
+| v1.1 | m = 6 graded search with pruning, U₅ in the UI, 4D projections, WASM hot paths | — |
 
 ---
 
-## 13. Decisions needed from you
+## 13. Decisions taken and still open
 
-1. **Stack:** Electron (recommended) or Tauri, or a Python/Qt lab if you
-   want Python scripting?
-2. **Dimension ambition for v1:** engine to 256 but UI tuned for ≤ 64, as
-   specified? Or push trigintaduonions (32) only and defer larger?
-3. **Console language:** JavaScript (same code as the app) as specified,
-   or a Python bridge in addition?
-4. **Tours:** are the seven in §7 the right first set? Which phenomena do
-   you most want to understand, so the observables and search tools are
-   shaped around them?
+Taken: Electron/TypeScript stack; engine to 256, UI tuned to 128;
+JavaScript console with external Python scripts as CI oracles rather than
+a bridge; both index notations first-class; the two papers' tables as the
+acceptance suite.
+
+Open:
+
+1. **Oracle scripts.** May the verification scripts from the mirror paper
+   (`cd.py`, `f2iso.py`, `check1–12`, `sym_spectrum.py`) be added under
+   `tools/oracle/lui/`? Wilmot's `geoalg` is public on GitHub and can be
+   vendored under its licence.
+2. **PDFs in the repo.** The two PDFs are referenced, not committed;
+   drop them into `docs/refs/` if you want them versioned alongside the
+   spec.
+3. **Tour order.** The Wilmot and mirror tours (6–14) are listed after the
+   general ones; say if the showcase should come first.
+4. **Question 2 of the mirror paper** (which words in {CD, M} give
+   non-isomorphic algebras with Der = 𝔤₂) is scoped as an app feature to
+   dimension 128 and a nightly job beyond; confirm that is the intended
+   use of the orientation tree.
 
 ---
 
 ## Appendix A. Notation
 
-- A: ambient algebra, dim n, basis e₀ = 1 (when unital), e₁…e_{n−1}.
-- B: subalgebra, dim k, orthonormal basis matrix (k × n); P_B its projector.
-- F: display frame, ≤ 3 (or 4) orthonormal directions in A.
-- L_x, R_x: left/right multiplication matrices (n × n).
-- Λ(S): leakage of subspace S (§3.5).
-- Der(A): derivation Lie algebra; exp(tD) is an automorphism flow.
-- Gr(k, n): Grassmannian of k-planes in ℝⁿ.
-- σ_min: smallest singular value.
+A ambient algebra, n = 2ᵐ; e_g, g ∈ 𝔽₂ᵐ, bitmask basis; o_α graded basis;
+ℓ = e₈ doubling unit of 𝕊, e′ = e₁₆ of 𝕋; F sign function; B subalgebra;
+F display frame; L_x, R_x; alt_x = [x,x,·]; N(x), t(x); Λ(S) leakage;
+Der(A); U_m = CD^{m+3}(ℝ), N_m = 2^{m+3} − 1; H_m, O_m, S_m counts of ℍ,
+𝕆, P_k copies; Z_m zero-divisor pair count; Z(A) norm-one zero divisors;
+Ann(x); P(A) pair manifold; V₂(ℝ⁷) Stiefel manifold; χ orientation bit.
 
-## Appendix B. Conventions to fix in code and document in-app
+## Appendix B. Conventions
 
-- Cayley–Dickson product and basis ordering (§3.2).
-- Clifford blade ordering (bitmask, lexicographic) and sign convention for
-  blade products (count of transpositions).
-- Numeric tolerance for rank and identity checks: 1e-9 relative, reported
-  alongside every boolean; exact mode reports true zero.
-- Colour channel defaults: position ← displayed, hue ← real part,
-  saturation ← leak, brightness ← hidden-in-B.
+CD product (a,b)(c,d) = (ac − ε d̄ b, da + b c̄), conj (ā, −b); mirror
+product (ca − d̄ b, da + b c̄); Fano lines of Convention 2.1; graded order
+by Pascal recurrence with o_α o_n = +o_{α∪n}; Clifford blades by bitmask
+with transposition-count signs; tolerances 1e-9 relative, exact mode where
+available.
+
+## Appendix C. References
+
+- G. P. Wilmot, *Structure of the Cayley–Dickson algebras*,
+  arXiv:2505.11747v3 (6 Feb 2026). Calculator: github.com/GPWilmot/geoalg.
+- G. P. Wilmot, *Construction of exceptional Lie algebra G₂ and
+  non-associative algebras using Clifford algebra*, arXiv:2505.06011 (the
+  P_k series).
+- Lui, *The mirror sedenions: a second G₂-symmetric doubling of the
+  octonions and the geometry of its zero divisors*, working draft v1,
+  September 2026.
+- J. W. Bales, *The eight Cayley–Dickson doubling products*, Adv. Appl.
+  Clifford Algebras 26 (2016).
+- R. E. Cawagas, *On the structure and zero divisors of the Cayley–Dickson
+  sedenion algebra*, Discuss. Math. Gen. Algebra Appl. 24 (2004).
+- R. E. Cawagas et al., *The basic subalgebra structure of the
+  Cayley–Dickson algebra of dimension 32*, arXiv:0907.2047 (2009).
+- K.-C. Chan, D. Ž. Đoković, *Conjugacy classes of subalgebras of the real
+  sedenions*, Canad. Math. Bull. 49 (2006).
+- R. P. C. de Marrais, *The 42 assessors and the box-kites they fly*,
+  arXiv:math/0011260 (2000).
+- G. Moreno, *The zero divisors of the Cayley–Dickson algebras over the
+  real numbers*, Bol. Soc. Mat. Mexicana (1998).
+- D. K. Biss, D. Dugger, D. C. Isaksen, *Large annihilators in
+  Cayley–Dickson algebras*, Comm. Algebra 36 (2008); with J. D.
+  Christensen, *Eigentheory of Cayley–Dickson algebras*, Forum Math. 21
+  (2009).
+- R. B. Brown, *On generalized Cayley–Dickson algebras*, Pacific J. Math.
+  20 (1967). P. Eakin, A. Sathaye, J. Algebra 129 (1990).
+- S. Reggiani, *The geometry of sedenion zero divisors*, arXiv:2411.18881.
+- J. Kirshtein, *Automorphism groups of Cayley–Dickson loops*, J. Gen. Lie
+  Theory Appl. 6 (2012).
