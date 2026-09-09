@@ -4,18 +4,28 @@
   "version": "0.1.0",
   "description": "Hypercomplex algebra and subalgebra viewer (see SPEC.md)",
   "type": "module",
-  "workspaces": ["core", "tools/cli"],
+  "workspaces": [
+    "core",
+    "tools/cli",
+    "app"
+  ],
   "scripts": {
     "build": "tsc -b",
     "test": "vitest run",
     "test:nightly": "HAV_NIGHTLY=1 vitest run",
-    "typecheck": "tsc -b --pretty",
-    "hav": "tsx tools/cli/src/hav.ts"
+    "typecheck": "tsc -b --pretty && tsc -p app/tsconfig.json",
+    "hav": "tsx tools/cli/src/hav.ts",
+    "app:dev": "npm --workspace app run dev",
+    "app:build": "npm --workspace app run build",
+    "app:start": "npm --workspace app run start",
+    "app:electron": "npm --workspace app run electron",
+    "app:electron-dev": "npm --workspace app run electron:dev"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.6.0",
-    "vitest": "^2.1.0"
+    "vitest": "^2.1.0",
+    "playwright-core": "^1.49.0"
   }
 }

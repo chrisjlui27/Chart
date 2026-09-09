@@ -10,12 +10,36 @@ slice, and watch the multiplication structure respond. See [SPEC.md](SPEC.md).
 - M0 done: workspace, CI, fixtures transcribed from both reference papers.
 - M1 done: engine (`core/`) with the Wilmot triad module and the mirror-double
   constructions; all fixtures green through U₄ (128 dimensions).
+- M3 done: desktop app shell (`app/`): Electron + React + Dockview with
+  Set, Multiplication table (χ and triad-type overlays), Structure graph,
+  Facts, Subalgebra lattice, Triad explorer, Zero divisors, Census, Console
+  and Tours panels; the engine runs in a Web Worker. Tours 6, 7, 8, 10, 11
+  and 14 are playable.
 - M2 done: mirror module (Φ, Bales census, orientation tree, χ, graded search,
   stretch spectrum, Z/Ann/P samplers, octaves, Brown's map, sign-function
   census); every Appendix A statement of the mirror paper is a passing test.
   See [docs/engine-notes.md](docs/engine-notes.md) for findings.
 
-## Use
+## Run the desktop app
+
+Requires Node.js 22 or newer. `npm install` downloads the Electron binary.
+
+```
+npm install
+npm run app:start          # builds the renderer and opens the window
+```
+
+For development, run the renderer with hot reload in a browser or in Electron:
+
+```
+npm run app:dev                       # http://localhost:5173 in any browser
+npm run app:electron-dev              # in a second terminal: Electron against the dev server
+```
+
+The renderer is a plain web app, so `npm run app:dev` alone is enough to use
+every panel in Chrome, Firefox or Safari.
+
+## Command line
 
 ```
 npm install
@@ -35,6 +59,7 @@ npm run hav -- mul S "o1 - o1234" "o2 + o34" --graded
 
 ```
 core/       engine (TypeScript, no UI dependency)
+app/        desktop app: Vite + React renderer (src/), Electron main (electron/)
 tools/cli   `hav` command-line front end
 tools/oracle  external reference implementations used by CI (GPL geoalg; not linked into the app)
 tests/fixtures  numbers transcribed from the papers

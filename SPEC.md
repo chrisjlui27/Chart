@@ -568,7 +568,7 @@ fixtures stand.
 | M0 ✓ | Spec, repo skeleton, CI, fixture files transcribed from both papers | `npm test` runs the fixture suite |
 | M1 ✓ | Engine: representations, constructors incl. M and Bales, ops, 𝔽₂ linalg, subalgebra lattice, fingerprints, Der, **triads module** complete for U₁–U₄, zero-divisor enumeration and modes, split variants; CLI regenerating Wilmot's tables | All Wilmot fixtures green through U₄ |
 | M2 ✓ | **Mirror module**: Φ, Bales census, orientation tree, χ, graded isomorphism search (m ≤ 5), stretch spectrum, Z/Ann/P samplers, octaves, Brown's map | All Appendix A fixtures green |
-| M3 | App shell: docking, Set, table with overlays, structure graph, facts, lattice, triad explorer, zero-divisor catalog, census panel, console | Tours 6–8, 10, 11, 14 playable in discrete views |
+| M3 ✓ | App shell: docking, Set, table with overlays, structure graph, facts, lattice, triad explorer, zero-divisor catalog, census panel, console | Tours 6–8, 10, 11, 14 playable in discrete views |
 | M4 | Slice + canvas: frames, observables incl. stretch spectrum, annihilator dimension, zero-divisor set; inspector with paper coordinates | Tours 1, 12 playable |
 | M5 | Rotation modes, leakage landscape, Der flows incl. diagonal G₂ and Brown's step, timeline, Compare | Tours 2, 3, 13 playable |
 | M6 | GPU fields, subalgebra search, higher mirrors at 64, sign-function census, exports, packaging | Tours 4, 5, 9 playable; v1.0 builds |
