@@ -13,6 +13,9 @@ export function TourPanel() {
     if (s.preset) { getAlgebra(s.preset); setState({ preset: s.preset }); }
     setState({ overlay: s.overlay ?? 'none' });
     if (s.gridD) setState({ gridD: s.gridD });
+    if (s.frame) setState({ frame: s.frame });
+    if (s.observable) setState({ observable: s.observable });
+    if (s.grid) setState({ grid: s.grid });
     select(s.select ?? {});
     if (s.panel) focusPanel(s.panel);
   };

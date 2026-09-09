@@ -67,6 +67,12 @@ const fns: Record<string, (...args: never[]) => unknown> = {
   octaveConfig(preset: string) { const o = hav.octaveConfiguration(A(preset)); return { composition: o.composition, throughPoint: o.throughPoint, avoidingPoint: o.avoidingPoint, hyperplanes: o.hyperplanes }; },
   identifySub(preset: string, basis: number[]) { const X = A(preset); const B = hav.basisSubalgebra(X, basis); return { label: hav.identify(B.induced), counts: basis.length === 3 ? hav.octaveTypeCounts(X, basis) : null, elements: B.elements }; },
   gaut(preset: string) { return hav.gradedAutomorphismOrder(A(preset)); },
+  sample(preset: string, frame: hav.FrameSpec, obs: hav.ObservableSpec, grid: hav.GridSpec) {
+    const X = hav.preset(preset);
+    const heavy = ['zd', 'ann', 'stretch', 'alt'].includes(obs.kind);
+    const res = X.n > 32 && heavy ? Math.min(grid.res, 6) : X.n > 16 && heavy ? Math.min(grid.res, 9) : grid.res;
+    return hav.sampleObservable(X as hav.SignAlgebra, frame, obs, { ...grid, res });
+  },
 };
 
 self.onmessage = (ev: MessageEvent<{ id: number; fn: string; args: unknown[] }>) => {

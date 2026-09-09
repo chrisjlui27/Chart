@@ -1,10 +1,26 @@
 import type { Selection } from './state/store';
+import type { FrameSpec, ObservableSpec, GridSpec } from '@hav/core';
 
-export interface TourStep { caption: string; preset?: string; select?: Selection; panel?: string; overlay?: 'none' | 'chi' | 'types'; gridD?: number }
+export interface TourStep { caption: string; preset?: string; select?: Selection; panel?: string; overlay?: 'none' | 'chi' | 'types'; gridD?: number; frame?: FrameSpec; observable?: ObservableSpec; grid?: GridSpec }
 export interface Tour { id: number; title: string; steps: TourStep[] }
 
 // bitmask indices: o1=1 o2=2 o12=3 o3=4 o13=5 o23=6 o123=7 o4=8 o14=9 o24=10 o124=11 o34=12 o134=13 o234=14 o1234=15
 export const TOURS: Tour[] = [
+  { id: 1, title: 'The sphere of complex numbers inside H', steps: [
+    { caption: 'Set H and slice it by the complex plane {1, i}. The square map x ↦ x² doubles angles and squares radii; every image stays in the plane, so the leak channel (colour) is zero everywhere.', preset: 'H', frame: { axes: ['1', 'o1'], origin: '0', tilt: { axis: 1, target: 'o2', angle: 0 } }, observable: { kind: 'square' }, grid: { res: 13, range: 1.4 }, panel: 'canvas' },
+    { caption: 'Tilt i toward j by 60°. The plane {1, cos θ i + sin θ j} is still a copy of C: the leakage readout stays at zero for every angle. Every unit imaginary quaternion spans a complex subalgebra: a whole S² of them.', preset: 'H', frame: { axes: ['1', 'o1'], origin: '0', tilt: { axis: 1, target: 'o2', angle: 1.05 } }, observable: { kind: 'square' }, grid: { res: 13, range: 1.4 }, panel: 'canvas' },
+    { caption: 'Now the 3-slice {1, i, j}. It is not a subalgebra: squares of points off the coordinate planes leak into k. The deformed lattice is coloured by how much of x² leaves the slice.', preset: 'H', frame: { axes: ['1', 'o1', 'o2'], origin: '0', tilt: { axis: 2, target: 'o12', angle: 0 } }, observable: { kind: 'square' }, grid: { res: 9, range: 1.2 }, panel: 'canvas' },
+    { caption: 'Exponential curves t ↦ exp(t x) for directions x in the slice {1, i, j}: imaginary directions give circles through 1, the real direction gives a ray. Compare with split-C, where the circles become hyperbolas.', preset: 'H', frame: { axes: ['1', 'o1', 'o2'], origin: '0' }, observable: { kind: 'exp' }, grid: { res: 4, range: 1 }, panel: 'canvas' },
+    { caption: 'The same is true in the sedenions: the plane {1, o1} tilted toward o4 stays closed. The sphere of complex subalgebras survives all the way up the Cayley–Dickson tower.', preset: 'S', frame: { axes: ['1', 'o1'], origin: '0', tilt: { axis: 1, target: 'o4', angle: 0.8 } }, observable: { kind: 'square' }, grid: { res: 13, range: 1.4 }, panel: 'canvas' },
+  ] },
+  { id: 12, title: 'Mirror III: the dead set', steps: [
+    { caption: 'The mirror sedenions in the chart x = a₀ + r·u + s·(b̂ℓ) with u = o1 and b̂ = u (so b ∈ C_u). The zero-divisor field σ_min(L_x)/|x| vanishes exactly on the line a₀ = 0, r = s: every u + bℓ with |a| = |b| and Re a = 0 is a zero divisor (Theorem 5.1).', preset: "S'", frame: { axes: ['1', 'o1', 'e9'], origin: '0' }, observable: { kind: 'zd' }, grid: { res: 13, range: 1.3 }, panel: 'canvas' },
+    { caption: 'The same chart in the sedenions: nothing. In S a zero divisor needs a ⊥ b as well, and here b is parallel to u.', preset: 'S', frame: { axes: ['1', 'o1', 'e9'], origin: '0' }, observable: { kind: 'zd' }, grid: { res: 13, range: 1.3 }, panel: 'canvas' },
+    { caption: 'Take b̂ = o2 ⊥ u instead. Now both algebras show the dead line a₀ = 0, r = s. On S it is the only kind of two-term zero divisor; on S′ it is the generic stratum.', preset: 'S', frame: { axes: ['1', 'o1', 'e10'], origin: '0' }, observable: { kind: 'zd' }, grid: { res: 13, range: 1.3 }, panel: 'canvas' },
+    { caption: 'Annihilator dimension on the b ∥ u chart of S′: 6 along the dead line (Theorem 5.2, the special stratum) and 0 elsewhere.', preset: "S'", frame: { axes: ['1', 'o1', 'e9'], origin: '0' }, observable: { kind: 'ann' }, grid: { res: 13, range: 1.3 }, panel: 'canvas' },
+    { caption: 'Annihilator dimension on the b ⊥ u chart: 2 on S′ (generic), 4 on S (Remark 5.6). Switch presets to compare.', preset: "S'", frame: { axes: ['1', 'o1', 'e10'], origin: '0' }, observable: { kind: 'ann' }, grid: { res: 13, range: 1.3 }, panel: 'canvas' },
+    { caption: 'Stretch levels: the number of distinct eigenvalues of L_x̄L_x / N(x). Five on S′ at generic points against three on S (Theorem 4.1). Click any point to open the inspector with a₀, |a′|, |b|, |b∥| and the full spectrum.', preset: "S'", frame: { axes: ['1', 'o1', 'e10'], origin: '0' }, observable: { kind: 'stretch' }, grid: { res: 9, range: 1.3 }, panel: 'canvas' },
+  ] },
   { id: 6, title: 'Wilmot I: types and silos', steps: [
     { caption: 'The octonions: every non-associative triad is type X (all three of Wilmot\'s associativity classes fail). Open the triad explorer: 35 triads, 7 associative lines, 28 of type X, eight XXX 3-triad cycles.', preset: 'O', panel: 'triads' },
     { caption: 'The sedenions add two more types. Triad (o1, o2, o34) is type A: [o1, o34, o2] = −2 o1234 while [o1, o2, o34] = [o2, o1, o34] = 0. The table highlights the four products that enter the associator.', preset: 'S', select: { triad: [1, 2, 12] }, panel: 'table' },

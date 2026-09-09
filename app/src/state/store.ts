@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react';
+import type { FrameSpec, ObservableSpec, GridSpec } from '@hav/core';
 
 export type Notation = 'bit' | 'graded';
 export interface Selection {
@@ -23,9 +24,15 @@ export interface AppState {
   focusPanel?: string;
   focusTick: number;
   log: string[];
+  frame: FrameSpec;
+  observable: ObservableSpec;
+  grid: GridSpec;
+  canvas: { showGrid: boolean; deadThreshold: number };
+  /** inspected point as coefficient array */
+  inspect?: number[];
 }
 
-const initial: AppState = { preset: 'S', notation: 'graded', selection: {}, overlay: 'none', gridD: 12, focusTick: 0, log: [] };
+const initial: AppState = { preset: 'S', notation: 'graded', selection: {}, overlay: 'none', gridD: 12, focusTick: 0, log: [], frame: { axes: ['1', 'o1', 'o2'], origin: '0', tilt: { axis: 2, target: 'o12', angle: 0 } }, observable: { kind: 'square', u: 'o1', v: 'o2' }, grid: { res: 9, range: 1.2 }, canvas: { showGrid: true, deadThreshold: 0.03 } };
 let state: AppState = initial;
 const listeners = new Set<() => void>();
 

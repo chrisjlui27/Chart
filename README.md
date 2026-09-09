@@ -10,6 +10,12 @@ slice, and watch the multiplication structure respond. See [SPEC.md](SPEC.md).
 - M0 done: workspace, CI, fixtures transcribed from both reference papers.
 - M1 done: engine (`core/`) with the Wilmot triad module and the mirror-double
   constructions; all fixtures green through U₄ (128 dimensions).
+- M4 done: 3D canvas (three.js) with slices given by axis expressions and a
+  tilt, observables (square, multiplication, commutator, associator, norm,
+  zero-divisor field with dead-set highlighting, annihilator dimension,
+  stretch levels, alternator, leakage, exponential curves), a live leakage
+  readout, and an Inspector with the mirror paper's coordinates. Tours 1
+  and 12 are playable.
 - M3 done: desktop app shell (`app/`): Electron + React + Dockview with
   Set, Multiplication table (χ and triad-type overlays), Structure graph,
   Facts, Subalgebra lattice, Triad explorer, Zero divisors, Census, Console

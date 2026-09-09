@@ -70,3 +70,10 @@ eigenvalues; annihilator dimensions 2 / 6 / 4.
   **three graded-isomorphism classes**: 𝕊 (8192 configurations, dim Der 14), 𝕊′ (8192, dim Der 14), and a third
   algebra (57 344, dim Der 8). This confirms the census claim of reference [16] and identifies the third
   eight-octave algebra as a new object to look at (`hav census`).
+
+## M4 note
+
+- The (a₀, r, s) chart of the mirror paper is just the frame with axes 1, u, b̂ℓ. With b̂ = u (basis `1, o1, e9`) the
+  zero-divisor field of 𝕊′ vanishes on the line a₀ = 0, r = s with 6-dimensional annihilators while 𝕊 has none;
+  with b̂ ⊥ u (`1, o1, e10`) both show the line, with annihilator dimension 2 on 𝕊′ and 4 on 𝕊. On the b ∈ ℂ_u
+  stratum the stretch spectrum collapses to three levels 0, 1, 2 (σ = τ = 1), which the inspector reports.

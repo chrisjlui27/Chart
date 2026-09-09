@@ -23,3 +23,5 @@ export * from './mirror/embedding.js';
 export * from './mirror/automorphisms.js';
 export * from './mirror/geometry.js';
 export * from './mirror/signCensus.js';
+export * from './fields/frame.js';
+export * from './fields/observables.js';

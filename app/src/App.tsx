@@ -12,12 +12,14 @@ import { ZeroDivisorPanel } from './panels/ZeroDivisorPanel';
 import { CensusPanel } from './panels/CensusPanel';
 import { ConsolePanel } from './panels/ConsolePanel';
 import { TourPanel } from './panels/TourPanel';
+import { CanvasPanel } from './panels/CanvasPanel';
+import { InspectorPanel } from './panels/InspectorPanel';
 import { getAlgebra } from './algebra';
 
 const components: Record<string, React.FunctionComponent<IDockviewPanelProps>> = {
-  set: SetPanel, table: TablePanel, graph: GraphPanel, facts: FactsPanel, lattice: LatticePanel, triads: TriadPanel, zd: ZeroDivisorPanel, census: CensusPanel, console: ConsolePanel, tours: TourPanel,
+  set: SetPanel, canvas: CanvasPanel, inspector: InspectorPanel, table: TablePanel, graph: GraphPanel, facts: FactsPanel, lattice: LatticePanel, triads: TriadPanel, zd: ZeroDivisorPanel, census: CensusPanel, console: ConsolePanel, tours: TourPanel,
 };
-const TITLES: Record<string, string> = { set: 'Set', table: 'Multiplication table', graph: 'Structure graph', facts: 'Facts', lattice: 'Subalgebra lattice', triads: 'Triad explorer', zd: 'Zero divisors', census: 'Census', console: 'Console', tours: 'Tours' };
+const TITLES: Record<string, string> = { set: 'Set', canvas: 'Canvas', inspector: 'Inspector', table: 'Multiplication table', graph: 'Structure graph', facts: 'Facts', lattice: 'Subalgebra lattice', triads: 'Triad explorer', zd: 'Zero divisors', census: 'Census', console: 'Console', tours: 'Tours' };
 
 export function App() {
   const api = useRef<DockviewApi | null>(null);
@@ -30,20 +32,23 @@ export function App() {
   const onReady = (e: DockviewReadyEvent) => {
     api.current = e.api;
     const add = (id: string, position?: { referencePanel: string; direction: 'left' | 'right' | 'above' | 'below' | 'within' }) => e.api.addPanel({ id, component: id, title: TITLES[id], position });
-    add('table');
-    add('set', { referencePanel: 'table', direction: 'left' });
+    add('canvas');
+    add('table', { referencePanel: 'canvas', direction: 'within' });
+    add('set', { referencePanel: 'canvas', direction: 'left' });
     add('lattice', { referencePanel: 'set', direction: 'within' });
     add('tours', { referencePanel: 'set', direction: 'below' });
-    add('facts', { referencePanel: 'table', direction: 'right' });
+    add('facts', { referencePanel: 'canvas', direction: 'right' });
+    add('inspector', { referencePanel: 'facts', direction: 'within' });
     add('census', { referencePanel: 'facts', direction: 'within' });
-    add('triads', { referencePanel: 'table', direction: 'below' });
+    add('triads', { referencePanel: 'canvas', direction: 'below' });
     add('zd', { referencePanel: 'triads', direction: 'within' });
     add('graph', { referencePanel: 'triads', direction: 'within' });
     add('console', { referencePanel: 'triads', direction: 'within' });
     e.api.getPanel('set')?.api.setActive();
     e.api.getPanel('facts')?.api.setActive();
     e.api.getPanel('triads')?.api.setActive();
-    e.api.getPanel('table')?.api.setActive();
+    e.api.getPanel('canvas')?.api.setActive();
+    setTimeout(() => { e.api.getPanel('triads')?.api.setSize({ height: 300 }); e.api.getPanel('set')?.api.setSize({ width: 470 }); e.api.getPanel('facts')?.api.setSize({ width: 470 }); }, 0);
   };
   const A = getAlgebra(preset);
   return (
