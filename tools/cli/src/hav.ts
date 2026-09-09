@@ -1,4 +1,5 @@
 #!/usr/bin/env tsx
+import { brownMap, automorphismDefect, findZeroDivisorPair, pairManifoldLocal, randomVectors, alternatorKernel, censusWithOctaves, classifyCensus, censusCosets, mirrorEmbedding, isMultiplicative, stretchSpectrum, annihilatorDim, formatElement as fmt } from '@hav/core';
 import { preset, PRESET_NAMES, SignAlgebra, MonomialAlgebra, facts, enumerateTriads, summarize, subalgebraCensus, zeroDivisorCount, zeroDivisorFormula, zeroDivisorTriads, cycleModeClasses, derivations, identify, fingerprint, balesCensus, orientationTree, octaveConfiguration, gradedAutomorphismOrder, subspacesOfDim, basisSubalgebra, SILOS, formatElement, parseElement, mul } from '@hav/core';
 
 const [cmd, ...args] = process.argv.slice(2);
@@ -78,6 +79,33 @@ switch (cmd) {
   }
   case 'octaves': { const X = A() as SignAlgebra; const o = octaveConfiguration(X, parseInt(opt('--point') ?? '8', 10)); console.log(`${X.name}: ${o.composition} composition hyperplanes, ${o.throughPoint} through the doubling point, ${o.avoidingPoint} avoiding it`); break; }
   case 'gaut': console.log(gradedAutomorphismOrder(A() as SignAlgebra)); break;
+  case 'brown': { const X = A(); console.log(`${X.name}: Brown map defect ${automorphismDefect(X, brownMap((2 * Math.PI) / 3, X.n)).toExponential(2)}`); break; }
+  case 'zdpair': {
+    const X = A();
+    for (let t = 0; t < parseInt(opt('--n') ?? '3', 10); t++) {
+      const zd = findZeroDivisorPair(X, randomVectors(X.n, 1, 100 + t)[0]);
+      if (!zd) { console.log('no zero divisor found from this start'); continue; }
+      const loc = pairManifoldLocal(X, zd.x, zd.y);
+      console.log(`x = ${fmt(X, zd.x)}\ny = ${fmt(X, zd.y)}\n  |xy| = ${zd.residual.toExponential(1)}, rank dμ ${loc.rankDmu}, dim P ${loc.dimP}, dim Z ${loc.dimZ}, dim Ann(x) ${loc.dimAnn}`);
+    }
+    break;
+  }
+  case 'point': {
+    const X = A() as SignAlgebra; const x = parseElement(X, args[1]);
+    console.log(`x = ${fmt(X, x)}`);
+    console.log(`  stretch spectrum: ${stretchSpectrum(X, x).map((e) => `${e.value.toFixed(6)}×${e.mult}`).join(' ')}`);
+    console.log(`  dim Ann(x) = ${annihilatorDim(X, x)}`);
+    const k = alternatorKernel(X, x); console.log(`  ker alt_x: dim ${k.dim}, closed ${k.closed}, composition ${k.composition}, associative ${k.associative}`);
+    break;
+  }
+  case 'embed': { const e = mirrorEmbedding(A()); console.log(`Φ: ${e.mirror.name} -> ${e.target.name} multiplicative: ${isMultiplicative(e.mirror, e.target, e.map)}`); break; }
+  case 'census': {
+    const min = parseInt(args[0] ?? '8', 10);
+    const rows = censusWithOctaves(min);
+    console.log(`sign functions on F2^4 with quaternion lines and standard founding octave, >= ${min} octaves: ${rows.length} configurations, ${censusCosets(rows).length} cosets mod sign changes`);
+    if (min >= 8) for (const c of classifyCensus(rows).classes) console.log(`  class: ${c.isS ? 'S' : c.isSprime ? "S'" : 'other'}, octaves ${c.octaves}, dim Der ${c.dimDer}, ${c.size} configurations, representative bits ${c.rep.bits}`);
+    break;
+  }
   case 'mul': { const X = A() as SignAlgebra; const x = parseElement(X, args[1]), y = parseElement(X, args[2]); const L = flag('--graded') ? X.gradedLabels() : X.labels; console.log(formatElement(X, mul(X, x, y), L)); break; }
   default:
     console.log(`hav — hypercomplex algebra viewer CLI
@@ -92,5 +120,10 @@ switch (cmd) {
   tree <depth> [--base P]    orientation tree of words in {CD, M}
   octaves <preset>           composition hyperplanes vs the doubling point
   gaut <preset>              graded automorphism group order
-  mul <preset> "x" "y"       multiply two elements, e.g. mul S "o1 - o1234" "o2 + o34"`);
+  mul <preset> "x" "y"       multiply two elements, e.g. mul S "o1 - o1234" "o2 + o34"
+  brown <preset>             defect of Brown's order-three map
+  zdpair <preset> [--n k]    find zero-divisor pairs and local dimensions of P and Z
+  point <preset> "x"         stretch spectrum, annihilator, ker alt_x at a point
+  embed <preset>             verify Φ: M(A) -> CD²(A)
+  census [min]               sign-function census on F2^4 (Question 2)`);
 }

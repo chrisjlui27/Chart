@@ -1,23 +1,284 @@
 {
   "_source": "Lui, The mirror sedenions (working draft v1, Sept 2026), Appendix A and Table 1.",
-  "fanoLines": [[1, 2, 3], [1, 4, 5], [2, 4, 6], [3, 4, 7], [1, 7, 6], [2, 5, 7], [3, 6, 5]],
+  "fanoLines": [
+    [
+      1,
+      2,
+      3
+    ],
+    [
+      1,
+      4,
+      5
+    ],
+    [
+      2,
+      4,
+      6
+    ],
+    [
+      3,
+      4,
+      7
+    ],
+    [
+      1,
+      7,
+      6
+    ],
+    [
+      2,
+      5,
+      7
+    ],
+    [
+      3,
+      6,
+      5
+    ]
+  ],
   "identities": {
-    "S": { "flexible": true, "powerAssociative": true, "alternative": false, "composition": false, "adjoint": true, "quadratic": true },
-    "S'": { "flexible": true, "powerAssociative": true, "alternative": false, "composition": false, "adjoint": true, "quadratic": true },
-    "M(H)": { "flexible": true, "powerAssociative": true, "alternative": false, "composition": false, "quadratic": true }
+    "S": {
+      "flexible": true,
+      "powerAssociative": true,
+      "alternative": false,
+      "composition": false,
+      "adjoint": true,
+      "quadratic": true
+    },
+    "S'": {
+      "flexible": true,
+      "powerAssociative": true,
+      "alternative": false,
+      "composition": false,
+      "adjoint": true,
+      "quadratic": true
+    },
+    "M(H)": {
+      "flexible": true,
+      "powerAssociative": true,
+      "alternative": false,
+      "composition": false,
+      "quadratic": true
+    }
   },
-  "dimDer": { "H": 3, "O": 14, "S": 14, "S'": 14, "M(H)": 6, "M(M(H))": 6, "CD(M(H))": 14, "T": 14 },
-  "balesClasses": { "S": ["P0", "P3", "P0T", "P3T"], "S'": ["P1", "P2", "P1T", "P2T"] },
-  "balesCensus": { "toS": 4, "toSprime": 4, "other": 24, "otherWithOnlyFoundingOctave": 20, "otherWithEightOctaves": 4, "otherDimDer": 14 },
-  "octaves": { "S": { "composition": 8, "throughPoint": 7, "avoidingPoint": 1 }, "S'": { "composition": 8, "throughPoint": 0, "avoidingPoint": 8 } },
-  "twoTermZeroDivisors": { "S": 84, "S'": 112 },
-  "orderedTwoTermPairs": { "S": 336, "S'": 336 },
-  "gradedAutomorphismOrder": { "S": 2688, "S'": 2688, "sigmas": 168 },
+  "dimDer": {
+    "H": 3,
+    "O": 14,
+    "S": 14,
+    "S'": 14,
+    "M(H)": 6,
+    "M(M(H))": 6,
+    "CD(M(H))": 14,
+    "T": 14
+  },
+  "balesClasses": {
+    "S": [
+      "P0",
+      "P3",
+      "P0T",
+      "P3T"
+    ],
+    "S'": [
+      "P1",
+      "P2",
+      "P1T",
+      "P2T"
+    ]
+  },
+  "balesCensus": {
+    "toS": 4,
+    "toSprime": 4,
+    "other": 24,
+    "otherWithOnlyFoundingOctave": 20,
+    "otherWithEightOctaves": 4,
+    "otherDimDer": 14
+  },
+  "octaves": {
+    "S": {
+      "composition": 8,
+      "throughPoint": 7,
+      "avoidingPoint": 1
+    },
+    "S'": {
+      "composition": 8,
+      "throughPoint": 0,
+      "avoidingPoint": 8
+    }
+  },
+  "twoTermZeroDivisors": {
+    "S": 84,
+    "S'": 112
+  },
+  "orderedTwoTermPairs": {
+    "S": 336,
+    "S'": 336
+  },
+  "gradedAutomorphismOrder": {
+    "S": 2688,
+    "S'": 2688,
+    "sigmas": 168
+  },
   "gradedIsoSToSprime": false,
-  "associatorFunction": { "plus": 168, "total": 420, "trilinear": false },
-  "hyperplanesOfT": { "S": 16, "S'": 1, "other": 14 },
-  "sGammaBasis": [1, 2, 4, 24],
-  "wordsAtDim16": { "CD.CD.CD.CD": "S", "CD.CD.CD.M": "S'", "CD.CD.M.CD": "S", "CD.CD.M.M": "neither" },
-  "stretch": { "S'": { "levels": 5, "multiplicities": [2, 4, 4, 4, 2] }, "S": { "levels": 3, "multiplicities": [4, 8, 4] } },
-  "annihilators": { "S'": { "generic": 2, "bInCu": 6 }, "S": { "generic": 4 } }
+  "associatorFunction": {
+    "plus": 168,
+    "total": 420,
+    "trilinear": false
+  },
+  "hyperplanesOfT": {
+    "S": 16,
+    "S'": 1,
+    "other": 14
+  },
+  "sGammaBasis": [
+    1,
+    2,
+    4,
+    24
+  ],
+  "wordsAtDim16": {
+    "CD.CD.CD.CD": "S",
+    "CD.CD.CD.M": "S'",
+    "CD.CD.M.CD": "S",
+    "CD.CD.M.M": "neither"
+  },
+  "stretch": {
+    "S'": {
+      "levels": 5,
+      "multiplicities": [
+        2,
+        4,
+        4,
+        4,
+        2
+      ]
+    },
+    "S": {
+      "levels": 3,
+      "multiplicities": [
+        4,
+        8,
+        4
+      ]
+    }
+  },
+  "annihilators": {
+    "S'": {
+      "generic": 2,
+      "bInCu": 6
+    },
+    "S": {
+      "generic": 4
+    }
+  },
+  "embedding": {
+    "bases": [
+      "H",
+      "O"
+    ],
+    "multiplicative": true
+  },
+  "balesIsomorphisms": [
+    [
+      "P3T",
+      "P0",
+      "ā+bℓ"
+    ],
+    [
+      "P3T",
+      "P3",
+      "a+b̄ℓ"
+    ],
+    [
+      "P3T",
+      "P0T",
+      "ā+b̄ℓ"
+    ],
+    [
+      "P1T",
+      "P1",
+      "a+b̄ℓ"
+    ],
+    [
+      "P1T",
+      "P2",
+      "ā+bℓ"
+    ],
+    [
+      "P1T",
+      "P2T",
+      "ā+b̄ℓ"
+    ]
+  ],
+  "brown": {
+    "orderOnS": 3,
+    "automorphismOfS": true,
+    "automorphismOfSprime": false
+  },
+  "automorphisms": {
+    "epsilonOnMirrorDoubles": true,
+    "diagonalG2OnSprime": true,
+    "twistedDiagonalOnMH": true,
+    "twistedDiagonalOnSprime": false
+  },
+  "pairManifold": {
+    "S": {
+      "rankDmu": 16,
+      "dimP": 14,
+      "dimZ": 11,
+      "dimAnn": 4
+    },
+    "S'": {
+      "rankDmu": 16,
+      "dimP": 14,
+      "dimZ": 13,
+      "dimAnn": 2
+    },
+    "S'-bInCu": {
+      "rankDmu": 16,
+      "dimP": 14,
+      "dimAnn": 6
+    }
+  },
+  "kerAlt": {
+    "S": {
+      "dim": 8,
+      "composition": true,
+      "associative": false
+    },
+    "S'": {
+      "dim": 4,
+      "composition": true,
+      "associative": true
+    }
+  },
+  "uniformP1TTower": {
+    "dimDer8": 6,
+    "dimDer16": 6,
+    "dim8IsMH": true
+  },
+  "hyperplanesOfTComposition": 0,
+  "signCensus": {
+    "_note": "sign functions on F2^4 with quaternion lines and the standard founding octave; classes up to graded isomorphism",
+    "configsWithEightOctaves": 73728,
+    "configsWithMoreThanEight": 0,
+    "cosetsModSignChanges": 576,
+    "classes": [
+      {
+        "isS": true,
+        "dimDer": 14,
+        "size": 8192
+      },
+      {
+        "isSprime": true,
+        "dimDer": 14,
+        "size": 8192
+      },
+      {
+        "other": true,
+        "dimDer": 8,
+        "size": 57344
+      }
+    ]
+  }
 }

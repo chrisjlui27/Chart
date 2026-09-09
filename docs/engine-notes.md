@@ -1,4 +1,4 @@
-# Engine notes (M1)
+# Engine notes (M1, M2)
 
 Findings recorded while making the paper fixtures pass. Each item is reproducible from the CLI or the tests.
 
@@ -48,3 +48,25 @@ eigenvalues; annihilator dimensions 2 / 6 / 4.
 - **Orientation tree at 32 (Question 2).** Over 𝕆, CD(𝕊′) is graded-isomorphic to 𝕋 = CD(𝕊); M(𝕊) and M(𝕊′)
   are two further classes. All four have dim Der = 14. Basis octaves: 𝕋 and CD(𝕊′) have 50 𝕆 + 105 M(ℍ);
   M(𝕊) and M(𝕊′) have 64 𝕆 + 91 M(ℍ). Depth 3 (dimension 64) runs nightly (`hav tree 3`).
+
+## M2 additions
+
+- **Explicit maps.** Φ: M(A) → CD²(A) is verified multiplicative and injective for A = ℍ, 𝕆 with the image on
+  indices 0…n−1 and 3n…4n−1 (`hav embed O`). The six Bales isomorphisms of Theorem 3.6 are verified as signed
+  index maps.
+- **Automorphisms.** Brown's order-three map is an automorphism of 𝕊 (defect 1e-16, cube = identity) and fails on
+  𝕊′ (defect 1.7); ε is an automorphism of every double; exp(tD) ⊕ exp(tD) for D ∈ Der(𝕆) acts on both; the
+  twisted map a + bℓ ↦ φ(a) + (qφ(b))ℓ is an automorphism of M(ℍ) for unit q and of 𝕊′ only for q = ±1.
+- **Zero-divisor geometry.** `findZeroDivisorPair` (alternating smallest-singular-vector iteration) lands on
+  norm-one pairs from random starts in a few steps. At every pair found, rank dμ = 16 and dim P = 14; dim Z = 11 on
+  𝕊 and 13 on 𝕊′ (9 on the b ∈ ℂ_u stratum, where Ann has dimension 6). Theorem 5.2's closed form of
+  Ann(u + bℓ) equals ker L_x in both strata; Ψ(u, n, q) gives two-sided norm-one pairs; ker alt_x is an octonion
+  subalgebra of 𝕊 and a quaternion subalgebra of 𝕊′ for random x (`hav point S' "..."`, `hav zdpair S'`).
+- **Sign-function census (Question 2).** Sign functions on 𝔽₂⁴ with every basis line a quaternion algebra and
+  the founding octave standard are 2²⁸ configurations (28 line orientations). "Hyperplane H is an octave" is an
+  affine condition over 𝔽₂ in the 28 bits (all 28 triads of H of type X, each an XOR of four bits), so the
+  configurations with at least eight octaves are the union of 3432 affine subspaces. Result: 73 728
+  configurations, all with exactly eight octaves (none has nine), 576 cosets modulo the sign changes, and exactly
+  **three graded-isomorphism classes**: 𝕊 (8192 configurations, dim Der 14), 𝕊′ (8192, dim Der 14), and a third
+  algebra (57 344, dim Der 8). This confirms the census claim of reference [16] and identifies the third
+  eight-octave algebra as a new object to look at (`hav census`).

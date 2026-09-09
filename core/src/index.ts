@@ -19,3 +19,7 @@ export * from './triads/references.js';
 export * from './facts/identities.js';
 export * from './facts/der.js';
 export * from './mirror/census.js';
+export * from './mirror/embedding.js';
+export * from './mirror/automorphisms.js';
+export * from './mirror/geometry.js';
+export * from './mirror/signCensus.js';
