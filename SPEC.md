@@ -1,6 +1,6 @@
 # Hypercomplex Algebra Viewer — Project Specification
 
-Status: draft v0.4 (desktop, dimension 128, Wilmot and mirror-sedenion targets; for review)
+Status: v0.5 (accepted baseline; desktop, dimension 128, Wilmot and mirror-sedenion targets)
 Target: standalone desktop application (macOS, Windows, Linux), fully offline
 
 ---
@@ -576,28 +576,28 @@ fixtures stand.
 
 ---
 
-## 13. Decisions taken and still open
+## 13. Decisions
 
-Taken: Electron/TypeScript stack; engine to 256, UI tuned to 128;
-JavaScript console with external Python scripts as CI oracles rather than
-a bridge; both index notations first-class; the two papers' tables as the
-acceptance suite.
+Taken:
 
-Open:
+- Electron/TypeScript stack; engine to 256, UI tuned to 128.
+- JavaScript console; external Python scripts as CI oracles, no bridge.
+- Both index notations first-class; the two papers' tables are the
+  acceptance suite.
+- The two PDFs are committed under `docs/refs/`.
+- Wilmot's `geoalg` (GPL-3.0) is vendored under `tools/oracle/wilmot/` as
+  a test oracle only; it is never linked into the application.
+- Tour order as listed in §7.
+- The orientation tree (§3.9) is an intended discovery tool for the
+  mirror paper's Question 2: build every word in {CD, M} over 𝕆 to
+  dimension 128, classify, and report which are non-isomorphic and which
+  have Der = 𝔤₂.
 
-1. **Oracle scripts.** May the verification scripts from the mirror paper
-   (`cd.py`, `f2iso.py`, `check1–12`, `sym_spectrum.py`) be added under
-   `tools/oracle/lui/`? Wilmot's `geoalg` is public on GitHub and can be
-   vendored under its licence.
-2. **PDFs in the repo.** The two PDFs are referenced, not committed;
-   drop them into `docs/refs/` if you want them versioned alongside the
-   spec.
-3. **Tour order.** The Wilmot and mirror tours (6–14) are listed after the
-   general ones; say if the showcase should come first.
-4. **Question 2 of the mirror paper** (which words in {CD, M} give
-   non-isomorphic algebras with Der = 𝔤₂) is scoped as an app feature to
-   dimension 128 and a nightly job beyond; confirm that is the intended
-   use of the orientation tree.
+Pending input:
+
+- The mirror paper's verification scripts (`cd.py`, `f2iso.py`,
+  `check1–12`, `sym_spectrum.py`) go under `tools/oracle/lui/` when
+  available; the fixtures transcribed from the paper stand until then.
 
 ---
 
