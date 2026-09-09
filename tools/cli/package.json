@@ -1,0 +1,7 @@
+{
+  "name": "@hav/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": { "hav": "./src/hav.ts" },
+  "dependencies": { "@hav/core": "*" }
+}
