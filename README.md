@@ -35,15 +35,21 @@ npm install
 npm run app:start          # builds the renderer and opens the window
 ```
 
-For development, run the renderer with hot reload in a browser or in Electron:
+Neither command needs a second terminal. For development, with hot reload:
 
 ```
 npm run app:dev                       # http://localhost:5173 in any browser
-npm run app:electron-dev              # in a second terminal: Electron against the dev server
+npm run app:electron-dev              # dev server + Electron window, one command
 ```
 
+`app:electron-dev` starts the dev server itself and opens the window once the
+server answers; if a dev server is already listening on the port it attaches to
+that one instead. Ctrl-C stops whatever it started. Set `HAV_DEV_PORT` to use a
+port other than 5173. To attach a window to a server you started elsewhere, use
+`npm run app:attach`.
+
 The renderer is a plain web app, so `npm run app:dev` alone is enough to use
-every panel in Chrome, Firefox or Safari.
+every panel in Chrome, Firefox or Safari — no Electron, no second terminal.
 
 ## Command line
 
